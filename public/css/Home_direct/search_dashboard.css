@@ -1,0 +1,357 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 60px;
+    background-color: #fff;
+    border-right: 1px solid #e0e0e0;
+    position: fixed;
+    height: 100%;
+    z-index: 100;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: #777;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.icon:hover, .icon.active {
+    background-color: #ffeb3b;
+    color: #333;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+/* Main Content Styling */
+.main-content {
+    flex: 1;
+    margin-left: 60px;
+    overflow-x: hidden;
+}
+
+/* Header Banner Styling */
+.header-banner {
+    background-image: url("public/images/Dashboard/Rumah Latarbelakang.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 250px;
+    position: relative;
+}
+
+/* Kode CSS untuk property-image */
+.property-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.logo-container h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.logo-container p {
+    font-size: 14px;
+    max-width: 60%;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+}
+
+.notification-icon {
+    margin-right: 15px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-profile span {
+    margin-right: 10px;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    color: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Search Container Styling */
+.search-container {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin: -25px 20px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 5px 10px;
+    flex: 1;
+    margin-right: 15px;
+}
+
+.search-bar i {
+    color: #777;
+    margin-right: 10px;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 5px 0;
+}
+
+.search-btn {
+    background-color: #ffeb3b;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.filter-options {
+    display: flex;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filter-btn i {
+    margin-right: 5px;
+}
+
+/* Property Grid Styling */
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 20px 50px;
+}
+
+/* Property Card Styling */
+.property-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.property-card:hover {
+    transform: translateY(-5px);
+}
+
+.property-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.property-card:hover .property-image img {
+    transform: scale(1.05);
+}
+
+.property-info {
+    padding: 15px;
+}
+
+.property-info h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.location {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+.property-details {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.property-details span {
+    display: flex;
+    align-items: center;
+}
+
+.property-details i {
+    margin-right: 5px;
+}
+
+.property-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #ffeb3b;
+    color: #000000;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-primary:hover {
+    background-color: #cbbb2d;
+}
+
+.btn-secondary:hover {
+    background-color: #f5f5f5;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+    .property-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .property-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .search-bar {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .filter-options {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
