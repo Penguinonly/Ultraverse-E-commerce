@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Penjual\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,12 @@ Route::get('/service', function () {
     return view('Home.service');
 });
 
+
+// Layout Penjual
+Route::middleware(['auth','role:penjual'])->prefix('penjual')->name('penjual.')->group(function(){
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    // ... route lain: transaksi, favorit, inbox, pesan, dll.
+});
 
 // Product CRUD
 Route::resource('products', ProductController::class);
