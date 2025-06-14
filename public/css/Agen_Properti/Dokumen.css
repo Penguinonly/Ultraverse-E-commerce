@@ -1,120 +1,298 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #f7f7f7;
-}
-
+/* Main Container */
 .container {
-  max-width: 700px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  background: white;
-  min-height: 100vh;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
 }
 
+/* Header */
 header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-header .back {
+.back {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 1.5rem;
   cursor: pointer;
+  padding: 0.5rem;
+  color: #333;
+  transition: transform 0.2s;
 }
 
-header h1 {
-  font-size: 24px;
-  font-weight: 500;
+.back:hover {
+  transform: translateX(-3px);
 }
 
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* Tab Navigation */
 .tab-nav {
   display: flex;
-  gap: 20px;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 20px;
-  position: relative;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
 }
 
 .tab {
-  position: relative;
-  padding: 10px 0;
   text-decoration: none;
-  color: black;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  color: #666;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
 .tab:hover {
-  color: #FFD600;
+  background: #f5f5f5;
+  color: #333;
 }
 
-/* Underline animation effect */
-.tab::after {
+.tab.active {
+  color: #FFD600;
+  font-weight: 500;
+  position: relative;
+}
+
+.tab.active::after {
   content: '';
   position: absolute;
+  bottom: -0.5rem;
   left: 0;
-  bottom: 0;
-  height: 3px;
-  width: 0%;
-  background-color: #FFD600;
-  transition: width 0.3s ease;
-}
-
-.tab:hover::after {
   width: 100%;
+  height: 2px;
+  background: #FFD600;
 }
 
-
+/* Upload Form */
 .upload-form {
+  max-width: 800px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 2rem;
 }
 
 .section-title {
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 20px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #ddd;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #333;
+  margin: 2rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-group label {
-  margin-bottom: 8px;
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #555;
+  font-size: 0.95rem;
   font-weight: 500;
-  font-size: 14px;
 }
 
+/* Photo Upload Box */
 .photo-box {
-  width: 100px;
-  height: 100px;
-  border: 1px dashed #ccc;
-  border-radius: 10px;
+  background: #f8f9fa;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: red;
-  font-size: 13px;
-  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-.next-btn {
+.photo-box::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='17 8 12 3 7 8'/%3E%3Cline x1='12' y1='3' x2='12' y2='15'/%3E%3C/svg%3E") center/contain no-repeat;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.photo-box:hover {
+  border-color: #FFD600;
+  background: rgba(255, 214, 0, 0.05);
+  color: #333;
+}
+
+.photo-box:hover::before {
+  opacity: 1;
+}
+
+.photo-box.has-file {
+  border-style: solid;
+  border-color: #FFD600;
+  background: rgba(255, 214, 0, 0.05);
+  color: #333;
+}
+
+.photo-box.has-file::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFD600' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/%3E%3Cpolyline points='22 4 12 14.01 9 11.01'/%3E%3C/svg%3E");
+  opacity: 1;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: flex-end;
+}
+
+.next-btn,
+.btn-primary {
   background: #FFD600;
-  color: black;
-  padding: 15px;
+  color: #333;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  margin-top: 30px;
+  transition: all 0.2s;
+  min-width: 150px;
+}
+
+.next-btn:hover,
+.btn-primary:hover {
+  background: #ffc800;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.next-btn:active,
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #666;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 120px;
+}
+
+.btn-secondary:hover {
+  background: #eee;
+  color: #333;
+}
+
+/* Alert Messages */
+.alert {
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border-radius: 6px;
+}
+
+.alert-danger {
+  background: #fff5f5;
+  color: #e53e3e;
+  border: 1px solid #feb2b2;
+}
+
+.alert-danger ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+/* Loading State */
+.photo-box.loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.photo-box.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border: 2px solid #FFD600;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .tab-nav {
+    gap: 0.5rem;
+  }
+  
+  .tab {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .section-title {
+    font-size: 1.15rem;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+  }
+  
+  .photo-box {
+    padding: 1.5rem;
+    min-height: 100px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .next-btn,
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    min-width: 100%;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
 }

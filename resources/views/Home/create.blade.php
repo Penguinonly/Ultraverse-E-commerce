@@ -38,11 +38,18 @@
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required />
+      </div>      <div class="form-group">
+        <label for="password_confirmation">Confirm Password</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" required />
       </div>
 
       <div class="form-group">
-        <label for="password_confirmation">Confirm Password</label>
-        <input type="password" id="password_confirmation" name="password_confirmation" required />
+        <label for="role">Pilih Peran</label>
+        <select id="role" name="role" required class="form-control">
+          <option value="">Pilih peran anda</option>
+          <option value="penjual">Penjual</option>
+          <option value="pembeli">Pembeli</option>
+        </select>
       </div>
 
       <button type="submit" class="btn">Create Account</button>

@@ -28,12 +28,14 @@ class AuthController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'role'     => 'required|in:penjual,pembeli',
         ]);
 
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => bcrypt($request->password),
+            'role'     => $request->role,
         ]);
 
         // Simpan user ke session
@@ -41,8 +43,15 @@ class AuthController extends Controller
             'id'    => $user->id,
             'name'  => $user->name,
             'email' => $user->email,
+            'role'  => $user->role,
         ]);
 
+        // Redirect based on role
+        if ($user->role === 'penjual') {
+            return redirect()->route('dashboard.penjual');
+        } else if ($user->role === 'pembeli') {
+            return redirect()->route('dashboard.pembeli');
+        }
         return redirect()->route('dashboard_search');
     }
 
@@ -62,7 +71,14 @@ class AuthController extends Controller
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $user->role,
             ]);
+            // Redirect based on role
+            if ($user->role === 'penjual') {
+                return redirect()->intended('/dashboard_penjual');
+            } else if ($user->role === 'pembeli') {
+                return redirect()->intended('/dashboard_pembeli');
+            }
             return redirect()->intended('/dashboard_search');
         }
         return back()->withErrors([
