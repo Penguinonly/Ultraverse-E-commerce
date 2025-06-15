@@ -12,7 +12,23 @@ class AuthController extends Controller
     // Menampilkan halaman login
     public function login()
     {
-        return view('Home.signIn'); // Ganti dengan lokasi view login kamu
+        $user =  Auth::user(); // Ambil user yang login
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        switch ($user->role) {
+            case 'admin':
+                return view('admin.dashboard');
+            case 'penjual':
+                return view('Home.signIn');
+            case 'pembeli':
+                return view('pembeli.dashboard');
+            default:
+                abort(403, 'Role tidak dikenal.');
+        }
+        // return view('Home.signIn'); // Ganti dengan lokasi view login kamu
     }
 
     // Menampilkan halaman register
@@ -28,12 +44,14 @@ class AuthController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'role'     => 'required|in:penjual,pembeli',
         ]);
 
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => bcrypt($request->password),
+            'role'     => $request->role,
         ]);
 
         // Simpan user ke session
@@ -41,8 +59,15 @@ class AuthController extends Controller
             'id'    => $user->id,
             'name'  => $user->name,
             'email' => $user->email,
+            'role'  => $user->role,
         ]);
 
+        // Redirect based on role
+        if ($user->role === 'penjual') {
+            return redirect()->route('dashboard.penjual');
+        } else if ($user->role === 'pembeli') {
+            return redirect()->route('dashboard.pembeli');
+        }
         return redirect()->route('dashboard_search');
     }
 
@@ -62,7 +87,14 @@ class AuthController extends Controller
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $user->role,
             ]);
+            // Redirect based on role
+            if ($user->role === 'penjual') {
+                return redirect()->intended('/dashboard_penjual');
+            } else if ($user->role === 'pembeli') {
+                return redirect()->intended('/dashboard_pembeli');
+            }
             return redirect()->intended('/dashboard_search');
         }
         return back()->withErrors([
@@ -70,12 +102,19 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // Logout
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
-        $request->session()->forget('user');
+        Auth::logout();
+        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/signIn');
+        
+        return redirect('/')->with('success', 'Anda berhasil keluar dari sistem.');
     }
 }

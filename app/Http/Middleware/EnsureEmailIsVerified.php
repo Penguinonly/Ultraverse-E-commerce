@@ -16,10 +16,32 @@ class EnsureEmailIsVerified
      */
     public function handle(Request $request, Closure $next, string $redirectToRoute = null): Response
     {
-        if (! $request->user() ||
-            ($request->user() instanceof MustVerifyEmail &&
-            ! $request->user()->hasVerifiedEmail())) {
-            return response()->json(['message' => 'Your email address is not verified.'], 409);
+        // Jika user belum login, arahkan ke halaman login
+        if (! $request->user()) {
+            return redirect()->route('auth.login');
+        }
+
+        // Daftar route yang tidak memerlukan verifikasi email
+        $excludedRoutes = [
+            'profile.*',
+            'profile.show',
+            'dokumen',
+            'dokumen.index'
+        ];
+
+        // Cek apakah route saat ini termasuk dalam pengecualian
+        foreach ($excludedRoutes as $route) {
+            if ($request->routeIs($route)) {
+                return $next($request);
+            }
+        }
+
+        // Untuk route lain, cek verifikasi email
+        if ($request->user() instanceof MustVerifyEmail &&
+            ! $request->user()->hasVerifiedEmail()) {
+            return $request->expectsJson()
+                ? abort(403, 'Your email address is not verified.')
+                : redirect()->route('verification.notice');
         }
 
         return $next($request);
