@@ -6,17 +6,7 @@
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-icons">
-                <div class="icon active"><i class="fas fa-home"></i></div>
-                <div class="icon"><i class="fas fa-file-alt"></i></div>
-                <div class="icon"><i class="fas fa-bookmark"></i></div>
-                <div class="icon"><i class="fas fa-comments"></i></div>
-                <div class="spacer"></div>
-                <div class="icon"><i class="fas fa-user"></i></div>
-                <div class="icon"><i class="fas fa-bell"></i></div>
-            </div>
-        </div>
+        <x-layouts.admin.sidebar></x-layouts.admin.sidebar>
 
         <!-- Main Content -->
         <div class="main-content">

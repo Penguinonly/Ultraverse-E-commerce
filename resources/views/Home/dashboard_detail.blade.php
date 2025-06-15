@@ -12,17 +12,7 @@
 </head>
 <body>
   <div class="container">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="icon"><a href="{{ url('dashboard_search') }}"><i class="fas fa-home"></i></a></div>
-      <div class="icon"><i class="fas fa-file-alt"></i></div>
-      <div class="icon"><a href="{{ url('simpan') }}"><i class="fas fa-bookmark"></i></a></div>
-      <div class="icon"><i class="fas fa-comments"></i></div>
-      <div class="spacer"></div>
-      <div class="icon"><i class="fas fa-user"></i></div>
-      <div class="icon"><i class="fas fa-bell"></i></div>
-    </div>
-
+    
     <main>
       <!-- DETAIL PROPERTI -->
       <section class="detail-property">
