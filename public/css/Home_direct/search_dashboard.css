@@ -11,6 +11,15 @@ body {
     color: #333;
 }
 
+.location-dropdown {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 50px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+
 .container {
     display: flex;
     min-height: 100vh;
@@ -217,17 +226,6 @@ body {
     display: flex;
 }
 
-.filter-btn {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
-    padding: 8px 15px;
-    margin-left: 10px;
-    cursor: pointer;
-    font-size: 14px;
-}
 
 .filter-options {
     display: flex;

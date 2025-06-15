@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Transaksi Properti</title>
-  <link rel="stylesheet" href="styleTrans.css" />
+  <link rel="stylesheet" href="rincian.css" />
 </head>
 <body>
   <div class="container">
@@ -16,9 +16,8 @@
 
     <!-- NAV TABS -->
     <nav class="tabs">
-      <button class="tab active" data-target="tab-data">Pengisian Data</button>
-      <button class="tab" data-target="tab-dokumen">Dokumen</button>
-      <button class="tab" data-target="tab-rincian">Rincian</button>
+      <button class="tab active" data-target="tab-rincian">Rincian</button>
+      <button class="tab" data-target="tab-data">Data Diri</button>
     </nav>
 
     <!-- TAB CONTENT: DATA -->
@@ -71,48 +70,7 @@
         <button type="submit" class="btn-next">Selanjutnya</button>
       </form>
     </div>
-
-    <!-- TAB CONTENT: DOKUMEN -->
-    <div id="tab-dokumen" class="tab-content">
-  <form class="form-doc">
-    <h2 class="section-title">Dokumen Pemilik</h2>
-        <div class="doc-group">
-      <label for="ktp-img">KTP Pemilik</label>
-      <div class="upload-box" id="preview-ktp">
-        <input type="file" id="ktp-img" accept="image/*" hidden />
-        <label for="ktp-img" class="upload-label">+ Tambah Foto</label>
-      </div>
-    </div>
-        <div class="doc-group">
-      <label for="pasfoto-img">Pas Foto</label>
-      <div class="upload-box" id="preview-pas">
-        <input type="file" id="pasfoto-img" accept="image/*" hidden />
-        <label for="pasfoto-img" class="upload-label">+ Tambah Foto</label>
-      </div>
-    </div>
-        <div class="doc-group">
-      <label for="kk-img">Kartu Keluarga (KK)</label>
-      <div class="upload-box" id="preview-kk">
-        <input type="file" id="kk-img" accept="image/*" hidden />
-        <label for="kk-img" class="upload-label">+ Tambah Foto</label>
-      </div>
-    </div>
-        <p class="agree-text">Saya menyetujui Syarat dan Ketentuan.</p>
-        <div class="terms-box">
-          <p>Dengan melengkapi formulir ini, Calon pembeli dan penjual telah menyatakan bahwa:</p>
-          <ul>
-            <li>Semua informasi yang diberikan adalah benar dan dapat dipertanggungjawabkan.</li>
-            <li>Pembeli memiliki kemampuan finansial yang cukup untuk melakukan transaksi pembelian properti yang diminati.</li>
-            <li>Pembeli bersedia mengikuti seluruh proses dan ketentuan pembelian properti yang berlaku di InHouse.</li>
-          </ul>
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" value="" label for="agree-terms"> Saya menyetujui Syarat dan Ketentuan</div>
-          </div>
-        <button type="button" class="btn-next" id="btn-doc-next" disabled>Selanjutnya</button>
-      </form>
-    </div>
+    
 
     <!-- TAB CONTENT: RINCIAN -->
     <div id="tab-rincian" class="tab-content">
