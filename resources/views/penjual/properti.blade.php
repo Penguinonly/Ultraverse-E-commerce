@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Halaman Penjual Properti</title>
-  <link rel="stylesheet" href="{{ asset('css/Agen_Properti/penjual.css') }}">
+  <link rel="stylesheet" href="proerti.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="sidebar">
       <div class="sidebar-icons">
-          <div class="icon active"><i class="fas fa-home"></i></div>
-          <div class="icon"><i class="fas fa-credit-card"></i></div>
-          <div class="icon"><i class="fas fa-bookmark"></i></div>
-          <div class="icon"><i class="fas fa-comments"></i></div>
-          <div class="spacer"></div>
-          <div class="icon"><i class="fas fa-user"></i></div>
+          <div class="icon"><i class="fas fa-home"></i></div>
+          <div class="icon active"><i class="fas fa-folder-plus"></i></div>
+          <div class="icon"><i class="fas fa-wallet"></i></div>
+          <div class="icon"><i class="fas fa-envelope"></i></div>
           <div class="icon"><i class="fas fa-bell"></i></div>
+          <div class="spacer"></div>
+          <div class="icon"><i class="fas fa-cog"></i></div>
+          <div class="icon"><i class="fas fa-right-from-bracket"></i></div>
           </div>
       </div>
 

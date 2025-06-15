@@ -8,7 +8,6 @@
     <div class="container">
         <!-- Sidebar -->
         <x-layouts.customer.sidebar></x-layouts.customer.sidebar>
-
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header Banner -->
@@ -64,11 +63,6 @@
                         <option value="TAKALAR">Takalar</option>
                         <option value="TORAJA">Toraja</option>
                         <option value="WAJO">Wajo</option>
-
-
-
-
-
                     </select>
 
                 </div>

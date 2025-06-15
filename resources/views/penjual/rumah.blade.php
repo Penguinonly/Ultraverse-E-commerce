@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload Rumah</title>
-  <link rel="stylesheet" href="{{ asset('css/Agen_Properti/Rumah.css') }}">
+  <link rel="stylesheet" href="rumah.css">
 </head>
 <body>
 
