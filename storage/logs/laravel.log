@@ -4663,3 +4663,43 @@ Did you mean one of these?
 [stacktrace]
 #0 {main}
 "} 
+[2025-06-15 16:01:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:02:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:03:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:04:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:05:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:06:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:07:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:08:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:09:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-15 16:10:32] local.ERROR: App\Models\User and Illuminate\Database\Eloquent\Concerns\HasAttributes define the same property ($casts) in the composition of App\Models\User. However, the definition differs and is considered incompatible. Class was composed {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): App\\Models\\User and Illuminate\\Database\\Eloquent\\Concerns\\HasAttributes define the same property ($casts) in the composition of App\\Models\\User. However, the definition differs and is considered incompatible. Class was composed at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:10)
+[stacktrace]
+#0 {main}
+"} 
