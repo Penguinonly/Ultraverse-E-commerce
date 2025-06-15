@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -40,38 +43,57 @@ class AuthController extends Controller
     // Proses registrasi
     public function register(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'role'     => 'required|in:penjual,pembeli',
+        $validator = Validator::make($request->all(), [
+            'noktp' => 'required|string|unique:users',
+            'nama' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:8',
+            'no_telepon' => 'required|string',
+            'alamat' => 'required|string',
+            'foto_ktp' => 'required|image|mimes:jpeg,png,jpg',
+            'verifikasi_wajah' => 'required|image|mimes:jpeg,png,jpg',
+            'pendapatan_perbulan' => 'required|numeric',
+            'role' => 'required|in:admin,penjual,pembeli'
         ]);
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => bcrypt($request->password),
-            'role'     => $request->role,
-        ]);
-
-        // Simpan user ke session
-        $request->session()->put('user', [
-            'id'    => $user->id,
-            'name'  => $user->name,
-            'email' => $user->email,
-            'role'  => $user->role,
-        ]);
-
-        // Redirect based on role
-        if ($user->role === 'penjual') {
-            return redirect()->route('dashboard.penjual');
-        } else if ($user->role === 'pembeli') {
-            return redirect()->route('dashboard.pembeli');
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-        return redirect()->route('dashboard_search');
+
+        try {
+            // Handle file uploads
+            $fotoKtpPath = $request->file('foto_ktp')->store('ktp_photos', 'public');
+            $verifikasiWajahPath = $request->file('verifikasi_wajah')->store('face_verifications', 'public');
+
+            $user = User::create([
+                'noktp' => $request->noktp,
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'no_telepon' => $request->no_telepon,
+                'alamat' => $request->alamat,
+                'foto_ktp' => $fotoKtpPath,
+                'verifikasi_wajah' => $verifikasiWajahPath,
+                'pendapatan_perbulan' => $request->pendapatan_perbulan,
+                'role' => $request->role
+            ]);
+
+            if ($user) {
+                Auth::login($user);
+                Log::info('User registered successfully', ['user_id' => $user->user_id]);
+                return redirect()->route($user->role . '.dashboard')
+                    ->with('success', 'Registration successful. Welcome to Ultraverse!');
+            }
+        } catch (\Exception $e) {
+            Log::error('Registration error: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Registration failed. Please try again.')
+                ->withInput();
+        }
     }
 
-    // Proses login    public function authenticate(Request $request)
+    // Proses login
+    public function authenticate(Request $request)
     {
         try {
             $credentials = $request->validate([
@@ -96,10 +118,9 @@ class AuthController extends Controller
                 ]);
 
                 // Log the login
-                \Log::info('User logged in', [
-                    'user_id' => $user->id,
-                    'role' => $user->role,
-                    'ip' => $request->ip()
+                Log::info('User logged in', [
+                    'user_id' => $user->user_id,
+                    'email' => $user->email
                 ]);
 
                 // Redirect based on role
@@ -120,7 +141,7 @@ class AuthController extends Controller
                 ->withInput($request->except('password'));
                 
         } catch (\Exception $e) {
-            \Log::error('Login error: ' . $e->getMessage());
+            Log::error('Login error: ' . $e->getMessage());
             return back()
                 ->withErrors(['error' => 'Terjadi kesalahan saat login. Silakan coba lagi.'])
                 ->withInput($request->except('password'));
@@ -135,11 +156,13 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $userId = Auth::id();
         Auth::logout();
-        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
-        return redirect('/')->with('success', 'Anda berhasil keluar dari sistem.');
+
+        Log::info('User logged out', ['user_id' => $userId]);
+        return redirect()->route('login')
+            ->with('success', 'You have been successfully logged out.');
     }
 }

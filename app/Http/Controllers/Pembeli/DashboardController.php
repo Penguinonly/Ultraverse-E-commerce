@@ -134,10 +134,10 @@ class DashboardController extends Controller
             $user = Auth::user();
             
             $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $user->id,
-                'phone' => ['required', 'string', 'max:20', 'regex:/^([0-9\s\-\+\(\)]{10,})$/'],
-                'address' => 'required|string|max:500',
+                'nama' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
+                'no_telepon' => ['required', 'string', 'max:20', 'regex:/^([0-9\s\-\+\(\)]{10,})$/'],
+                'alamat' => 'required|string|max:500',
                 'avatar' => [
                     'nullable',
                     'image',
@@ -161,43 +161,36 @@ class DashboardController extends Controller
                 
                 try {
                     if ($user->avatar) {
-                        $oldAvatarPath = 'public/avatars/' . $user->avatar;
-                        if (Storage::exists($oldAvatarPath)) {
-                            Storage::delete($oldAvatarPath);
-                        }
+                        Storage::delete('public/avatars/' . $user->avatar);
                     }
                     
-                    $path = $avatar->storeAs('public/avatars', $filename);
-                    if (!$path) {
-                        throw new \Exception('Failed to upload avatar');
-                    }
-                    
+                    $avatar->storeAs('public/avatars', $filename);
                     $user->avatar = $filename;
                 } catch (\Exception $e) {
                     Log::error('Avatar upload error: ' . $e->getMessage());
-                    throw new \Exception('Failed to process avatar upload');
+                    throw new \Exception('Failed to upload avatar');
                 }
             }
 
             $user->fill([
-                'name' => $request->name,
+                'nama' => $request->nama,
                 'email' => $request->email,
-                'phone' => $request->phone,
-                'address' => $request->address
+                'no_telepon' => $request->no_telepon,
+                'alamat' => $request->alamat
             ]);
             
             $user->save();
 
             if ($request->has('notification_preferences')) {
                 $user->settings()->updateOrCreate(
-                    ['user_id' => $user->id],
+                    ['user_id' => $user->user_id],
                     ['notification_preferences' => $request->notification_preferences]
                 );
             }
 
             if ($request->has('language')) {
                 $user->settings()->updateOrCreate(
-                    ['user_id' => $user->id],
+                    ['user_id' => $user->user_id],
                     ['language' => $request->language]
                 );
             }

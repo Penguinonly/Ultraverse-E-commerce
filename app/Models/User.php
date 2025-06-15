@@ -46,7 +46,7 @@ class User extends Authenticatable
      */
     public function properties()
     {
-        return $this->hasMany(Property::class);
+        return $this->hasMany(Property::class, 'user_id');
     }
 
     /**
@@ -54,7 +54,7 @@ class User extends Authenticatable
      */
     public function savedProperties()
     {
-        return $this->hasMany(SavedProperty::class);
+        return $this->hasMany(SavedProperty::class, 'user_id');
     }
 
     /**
@@ -86,7 +86,7 @@ class User extends Authenticatable
      */
     public function settings()
     {
-        return $this->hasOne(UserSetting::class);
+        return $this->hasOne(UserSetting::class, 'user_id');
     }
 
     /**
@@ -111,13 +111,5 @@ class User extends Authenticatable
     public function isPembeli()
     {
         return $this->role === 'pembeli';
-    }
-
-    /**
-     * Get the user's session
-     */
-    public function session()
-    {
-        return $this->hasOne(Session::class);
     }
 }
