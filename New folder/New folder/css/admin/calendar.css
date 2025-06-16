@@ -1,0 +1,143 @@
+/* Calendar Styles */
+.calendar-container {
+    padding: 2rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.month-select {
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    min-width: 200px;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.day-box {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.day-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.day-box.selected {
+    background: #3b82f6;
+    color: white;
+}
+
+.day-box .weekday {
+    font-size: 0.875rem;
+    color: inherit;
+    opacity: 0.8;
+}
+
+.day-box .date {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+.day-box .slots {
+    font-size: 0.75rem;
+    color: inherit;
+    opacity: 0.8;
+}
+
+/* Time Slots */
+.time-slots {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.time-slot:last-child {
+    border-bottom: none;
+}
+
+.time-slot-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-slot-time {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.time-slot-status {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+}
+
+.status-available {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-booked {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.time-slot-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Calendar Tools */
+.calendar-tools {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tool-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tool-button:hover {
+    background: #f9fafb;
+}
+
+.tool-button.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}

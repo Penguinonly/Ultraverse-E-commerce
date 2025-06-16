@@ -36,8 +36,9 @@ Route::get('/service', function () {
 
 // Layout Penjual
 Route::middleware(['auth','role:penjual'])->prefix('penjual')->name('penjual.')->group(function(){
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
-    // ... route lain: transaksi, favorit, inbox, pesan, dll.
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('penjual.dashboard');
+  
+
 });
 
 // Product CRUD

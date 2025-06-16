@@ -16,8 +16,9 @@
       </a>
      <nav class="nav-links">
         <a href="../Home/home.html" class="active">Home</a>
-        <a href="../Service/service.html">Service</a>
-        <a href="../About/aboutUS.html">About us</a>
+        <a href="{{ route('about') }}">About us</a>
+        <a href="{{ route('service') }}">Service</a>
+
       </nav>
       <a href="../Login/signIn.html" class="btn-login">Login</a>
 </a>

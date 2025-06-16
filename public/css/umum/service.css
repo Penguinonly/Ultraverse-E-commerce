@@ -1,0 +1,189 @@
+/* Reset & Globals */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #fff;
+  color: #333;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* Header */
+header {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.logo-img {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+}
+
+.brand {
+  font-size: 1.2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: #666;
+  font-weight: 500;
+}
+
+.nav-links a.active {
+  color: #000;
+  font-weight: bold;
+}
+
+.btn-login {
+  background: #FFDC38;
+  padding: .5rem 1rem;
+  border-radius: 50px;
+  font-weight: bold;
+}
+
+/* Ensure hero title is always visible above logo */
+.hero-about {
+  position: relative;
+  background: #666;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-logo {
+  width: 150px;
+  opacity: 0.85;
+  z-index: 1;
+}
+
+.hero-title {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #fff;
+  font-weight: 600;
+  z-index: 2;
+  background-color: transparent;
+}
+
+/* Grid Service Content Section */
+.service-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 4rem 0;
+}
+
+.service-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: start;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 2rem;
+}
+
+.service-title {
+  font-size: 2rem;
+  color: #d4af37;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.service-desc {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Footer */
+footer {
+  background: #fff;
+  padding: 2rem 0;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-logo img {
+  width: 32px;
+  height: 32px;
+}
+
+.footer-info p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.25rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .service-item {
+    grid-template-columns: 1fr;
+  }
+
+  .service-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .service-desc {
+    text-align: justify;
+  }
+}

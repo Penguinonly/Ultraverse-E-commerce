@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Rumah - Jadwal</title>
+  <link rel="stylesheet" href="{{ asset('css/Agen_Properti/jadwal.css') }}">
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <button class="back">&larr;</button>
+      <h1>Upload Rumah</h1>
+    </header>
+
+     <nav class="tab-nav">
+      <a class="tab" href="Rumah.html">Rumah</a>
+      <a class="tab" href="Dokumen.html">Dokumen</a>
+      <a class="tab" href="Jadwal.html">Jadwal</a>
+    </nav>
+
+
+    <form class="schedule-form">
+
+      <section class="inspection-section">
+        <label class="checkbox-container">
+          <input type="checkbox" id="agreement">
+          Saya menyetujui Syarat dan Ketentuan Inspeksi.
+        </label>
+        
+        <div class="info-box">
+          <p>Jenis Inspeksi yang akan dilakukan:</p>
+          <ul>
+            <li>Struktur Bangunan</li>
+            <li>Instalasi Listrik & Air</li>
+            <li>Atap & Talang Air</li>
+            <li>Drainase</li>
+            <li>HVAC (Pemanas, Ventilasi, dan AC)</li>
+            <li>Keamanan Kebakaran</li>
+            <li>Aksesibilitas & Keselamatan Penghuni</li>
+            <li>Survey Tanah & Geoteknik</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="date-time-section">
+        <h2>Preferensi tanggal & waktu</h2>
+        <div class="datetime-wrapper">
+          <div class="date-picker">
+            <label for="date">Pilih Tanggal</label>
+            <input type="date" id="date" name="date">
+          </div>
+          <div class="time-picker">
+            <label for="time">Pilih Waktu</label>
+            <select id="time" name="time">
+              <option value="">-- Pilih Waktu --</option>
+              <option value="09:00">09:00</option>
+              <option value="11:00">11:00</option>
+              <option value="13:00">13:00</option>
+              <option value="15:00">15:00</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <button class="upload-btn" type="submit">Upload</button>
+    </form>
+  </div>
+
+</body>
+</html>
