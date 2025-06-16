@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
-use App\Models\Property;
-use App\Models\Payment;
-use App\Models\SavedProperty;
+use App\Models\Properti;
+use App\Models\Pembayaran;
+use App\Models\Favorit;
 
 class RoleSessionMiddleware
 {
@@ -28,10 +28,11 @@ class RoleSessionMiddleware
         }
 
         $user = Auth::user();
+        $userRole = $user->peran()->first();
         
-        if (!in_array($user->role, $roles)) {
-            return redirect()->route($user->role . '.dashboard')
-                ->with('error', 'Unauthorized access.');
+        if (!$userRole || !in_array($userRole->nama_peran, $roles)) {
+            return redirect()->route('home')
+                ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
         }
 
         // Set common session data
@@ -39,30 +40,41 @@ class RoleSessionMiddleware
             'user_id' => $user->user_id,
             'nama' => $user->nama,
             'email' => $user->email,
-            'role' => $user->role
+            'role' => $userRole->nama_peran
         ];
 
         // Set role-specific session data
         try {
-            switch ($user->role) {
+            switch ($userRole->nama_peran) {
                 case 'admin':
                     $sessionData['total_users'] = User::count();
-                    $sessionData['total_properties'] = Property::count();
-                    $sessionData['pending_verifications'] = User::where('is_verified', false)->count();
+                    $sessionData['total_properti'] = Properti::count();
+                    $sessionData['pending_pembayaran'] = Pembayaran::where('status_pembayaran', 'pending')
+                        ->whereNull('konfirmasi_pembayaran')
+                        ->count();
                     break;
 
                 case 'penjual':
-                    $sessionData['properties_count'] = Property::where('user_id', $user->user_id)->count();
-                    $sessionData['pending_transactions'] = Payment::where('seller_id', $user->user_id)
-                        ->where('status', 'pending')
-                        ->count();
+                    $propertiIds = Properti::where('user_id', $user->user_id)->pluck('properti_id');
+                    $sessionData['total_properti'] = $propertiIds->count();
+                    $sessionData['pending_transaksi'] = Pembayaran::whereIn('transaksi_id', function($query) use ($propertiIds) {
+                        $query->select('transaksi_id')
+                            ->from('transaksi')
+                            ->whereIn('properti_id', $propertiIds);
+                    })
+                    ->where('status_pembayaran', 'pending')
+                    ->count();
                     break;
 
                 case 'pembeli':
-                    $sessionData['saved_properties'] = SavedProperty::where('user_id', $user->user_id)->count();
-                    $sessionData['active_transactions'] = Payment::where('buyer_id', $user->user_id)
-                        ->whereIn('status', ['pending', 'processing'])
-                        ->count();
+                    $sessionData['favorit'] = Favorit::where('user_id', $user->user_id)->count();
+                    $sessionData['active_pembayaran'] = Pembayaran::whereIn('transaksi_id', function($query) use ($user) {
+                        $query->select('transaksi_id')
+                            ->from('transaksi')
+                            ->where('user_id', $user->user_id);
+                    })
+                    ->whereIn('status_pembayaran', ['pending', 'proses'])
+                    ->count();
                     break;
             }
         } catch (\Exception $e) {
