@@ -27,8 +27,23 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'email', 'exists:users,email'],
             'password' => ['required', 'string'],
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.exists' => 'Email tidak terdaftar.',
+            'password.required' => 'Password harus diisi.',
         ];
     }
 
@@ -45,9 +60,18 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email atau password salah.',
             ]);
         }
+
+        // Set session data setelah login berhasil
+        $user = Auth::user();
+        session([
+            'user_id' => $user->user_id,
+            'email' => $user->email,
+            'nama' => $user->nama,
+            'role' => $user->peran()->first() ? $user->peran()->first()->nama_peran : null
+        ]);
 
         RateLimiter::clear($this->throttleKey());
     }

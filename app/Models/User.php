@@ -12,104 +12,107 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'users';
-      protected $primaryKey = 'user_id';
-    
+    public $timestamps = true;
+
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
+        'password',
+        'noktp',
         'nama',
         'email',
-        'password',
-        'role',
         'no_telepon',
         'alamat',
-        'noktp',
         'foto_ktp',
-        'verifikasi_wajah',
-        'pendapatan_perbulan'
+        'verivikasi_wajah',
+        'pendapatan_perbulan',
+        'id_peran'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'noktp',
-        'foto_ktp',
-        'verifikasi_wajah'
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'is_verified' => 'boolean',
-        'pendapatan_perbulan' => 'decimal:2'
+        'password' => 'hashed',
+        'pendapatan_perbulan' => 'integer',
+        'verivikasi_wajah' => 'boolean'
     ];
 
     /**
-     * Get the properties listed by this user (for sellers)
+     * Get the user's role.
      */
-    public function properties()
+    public function peran()
     {
-        return $this->hasMany(Property::class, 'user_id');
+        return $this->belongsTo(Peran::class, 'id_peran', 'id_peran');
     }
 
     /**
-     * Get the saved properties for this user (for buyers)
+     * Check if user has specific role
      */
-    public function savedProperties()
+    public function hasRole(string $role): bool
     {
-        return $this->hasMany(SavedProperty::class, 'user_id');
-    }
-
-    /**
-     * Get user's documents
-     */
-    public function documents()
-    {
-        return $this->hasMany(Document::class);
-    }
-
-    /**
-     * Get user's payments as buyer
-     */
-    public function buyerPayments()
-    {
-        return $this->hasMany(Payment::class, 'buyer_id');
-    }
-
-    /**
-     * Get user's payments as seller
-     */
-    public function sellerPayments()
-    {
-        return $this->hasMany(Payment::class, 'seller_id');
-    }
-
-    /**
-     * Get user's settings
-     */
-    public function settings()
-    {
-        return $this->hasOne(UserSetting::class, 'user_id');
+        $userRole = $this->peran()->first();
+        return $userRole ? strtolower($userRole->nama_peran) === strtolower($role) : false;
     }
 
     /**
      * Check if user is admin
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->hasRole('admin');
     }
 
-    /**
-     * Check if user is seller
-     */
-    public function isPenjual()
+    public function properti()
     {
-        return $this->role === 'penjual';
+        return $this->hasMany(Properti::class, 'user_id');
     }
 
-    /**
-     * Check if user is buyer
-     */
-    public function isPembeli()
+    public function favorit()
     {
-        return $this->role === 'pembeli';
+        return $this->hasMany(Favorit::class, 'user_id');
+    }
+
+    public function transaksiAsPembeli()
+    {
+        return $this->hasMany(Transaksi::class, 'pembeli_id');
+    }
+
+    public function transaksiAsPenjual()
+    {
+        return $this->hasMany(Transaksi::class, 'penjual_id');
+    }
+
+    public function notifikasi()
+    {
+        return $this->hasMany(Notifikasi::class, 'user_id');
+    }
+
+    public function pesanDikirim()
+    {
+        return $this->hasMany(Pesan::class, 'pengirim_id');
+    }
+
+    public function pesanDiterima()
+    {
+        return $this->hasMany(Pesan::class, 'penerima_id');
+    }
+
+    public function laporanInspeksi()
+    {
+        return $this->hasMany(LaporanInspeksi::class, 'inspector_id');
+    }
+
+    public function ratingUlasan()
+    {
+        return $this->hasMany(RatingUlasan::class, 'user_id');
+    }
+
+    public function dokumen()
+    {
+        return $this->hasMany(Dokumen::class, 'user_id', 'user_id');
     }
 }

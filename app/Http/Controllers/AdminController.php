@@ -4,144 +4,99 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Property;
-use App\Models\Payment;
+use App\Models\Properti;
+use App\Models\Transaksi;
+use App\Models\Pembayaran;
+use App\Models\LaporanInspeksi;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
-{
-    public function dashboard()
+{    public function dashboard()
     {
         $stats = [
             'total_users' => User::count(),
-            'total_properties' => Property::count(),
-            'pending_verifications' => User::whereNull('verifikasi_wajah')->count(),
-            'total_transactions' => Payment::count(),
+            'total_properti' => Properti::count(),
+            'pending_verifications' => User::whereNull('verivikasi_wajah')->count(),
+            'total_transaksi' => Transaksi::count(),
             'recent_users' => User::latest()->take(5)->get(),
-            'recent_properties' => Property::with('user')->latest()->take(5)->get(),
-            'recent_transactions' => Payment::with(['user', 'property'])->latest()->take(5)->get(),
+            'recent_properti' => Properti::with('user')->latest()->take(5)->get(),
+            'recent_transaksi' => Transaksi::with(['properti', 'pembeli', 'penjual'])->latest()->take(5)->get(),
         ];
 
         return view('admin.dashboard', compact('stats'));
-    }
-
-    public function users()
+    }    public function users()
     {
-        $users = User::withCount(['properties', 'savedProperties', 'payments'])
+        $users = User::withCount(['properti', 'favorit', 'transaksiAsPembeli', 'transaksiAsPenjual'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('admin.users', compact('users'));
+        return view('admin.users.index', compact('users'));
     }
 
-    public function properties()
+    public function properti()
     {
-        $properties = Property::with(['user', 'images'])
-            ->withCount('savedProperties')
+        $properti = Properti::with(['user', 'gambar'])
+            ->withCount('favorit')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('admin.properties', compact('properties'));
+        return view('admin.properti.index', compact('properti'));
     }
 
-    public function transactions()
+    public function transaksi()
     {
-        $transactions = Payment::with(['user', 'property', 'property.user'])
+        $transaksi = Transaksi::with(['properti', 'pembeli', 'penjual', 'pembayaran'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('admin.transactions', compact('transactions'));
+        return view('admin.transaksi.index', compact('transaksi'));
+    }    public function showUser(User $user)
+    {
+        $user->load(['properti', 'transaksiAsPembeli', 'transaksiAsPenjual']);
+        return view('admin.users.show', compact('user'));
     }
 
-    public function verifications()
+    public function verifyUser(User $user)
     {
-        $pendingVerifications = User::where(function($query) {
-            $query->whereNull('verifikasi_wajah')
-                  ->orWhereNull('foto_ktp');
-        })
-        ->where('role', 'penjual')
-        ->with(['properties' => function($query) {
-            $query->select('id', 'user_id', 'status');
-        }])
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
+        $user->update([
+            'verivikasi_wajah' => now()
+        ]);
+
+        return back()->with('success', 'User verified successfully');
+    }
+
+    public function showProperti(Properti $properti)
+    {
+        $properti->load(['user', 'gambar', 'dokumen', 'transaksi']);
+        return view('admin.properti.show', compact('properti'));
+    }
+
+    public function verifyProperti(Properti $properti)
+    {
+        $properti->update([
+            'status' => 'verified'
+        ]);
+
+        // Also update related documents if any
+        if ($properti->dokumen()->exists()) {
+            $properti->dokumen()->update(['status' => 'verified']);
+        }
+
+        return back()->with('success', 'Property verified successfully');
+    }
+
+    public function showTransaksi(Transaksi $transaksi)
+    {
+        $transaksi->load(['properti', 'pembeli', 'penjual', 'pembayaran']);
+        return view('admin.transaksi.show', compact('transaksi'));
+    }
+
+    public function laporan()
+    {
+        $laporanInspeksi = LaporanInspeksi::with(['properti', 'inspector'])
+            ->latest()
+            ->paginate(10);
             
-        return view('admin.verifications', compact('pendingVerifications'));
-    }
-
-    public function updateVerification(Request $request, User $user)
-    {
-        $request->validate([
-            'verification_status' => 'required|in:approved,rejected',
-            'verification_type' => 'required|in:wajah,ktp',
-            'rejection_reason' => 'required_if:verification_status,rejected'
-        ]);
-
-        $updateData = [];
-        if ($request->verification_type === 'wajah') {
-            $updateData['verifikasi_wajah'] = $request->verification_status === 'approved' ? now() : null;
-        } else {
-            $updateData['foto_ktp'] = $request->verification_status === 'approved' ? 'verified' : null;
-        }
-
-        if ($request->verification_status === 'rejected') {
-            $updateData['verification_rejection_reason'] = $request->rejection_reason;
-        }
-
-        $user->update($updateData);
-
-        // Update related property statuses if needed
-        if ($request->verification_status === 'rejected') {
-            Property::where('user_id', $user->id)
-                   ->where('status', 'pending')
-                   ->update(['status' => 'rejected']);
-        }
-
-        return redirect()->back()->with('success', 'Verification status updated successfully');
-    }
-
-    public function showUserDetails(User $user)
-    {
-        // Loading relationships
-        $userData = $user->load([
-            'properties',
-            'savedProperties',
-            'buyerPayments',
-            'sellerPayments'
-        ]);
-
-        // Getting statistics
-        $stats = [
-            'total_properties' => $userData->properties->count(),
-            'saved_properties' => $userData->savedProperties->count(),
-            'total_purchases' => $userData->buyerPayments->count(),
-            'total_sales' => $userData->sellerPayments->count(),
-        ];
-
-        return view('admin.user-details', compact('userData', 'stats'));
-    }
-
-    public function showPropertyDetails(Property $property)
-    {
-        $property->load([
-            'user',
-            'images',
-            'payments',
-            'savedProperties.user'
-        ]);
-
-        return view('admin.property-details', compact('property'));
-    }
-
-    public function showTransactionDetails(Payment $payment)
-    {
-        $payment->load([
-            'user',
-            'property',
-            'property.user',
-            'property.images'
-        ]);
-
-        return view('admin.transaction-details', compact('payment'));
+        return view('admin.laporan.index', compact('laporanInspeksi'));
     }
 }
