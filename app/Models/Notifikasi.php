@@ -14,6 +14,7 @@ class Notifikasi extends Model
 
     protected $fillable = [
         'user_id',
+        'properti_id',
         'judul',
         'pesan',
         'dibaca',
@@ -28,5 +29,10 @@ class Notifikasi extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function properti(): BelongsTo
+    {
+        return $this->belongsTo(Properti::class, 'properti_id', 'properti_id');
     }
 }

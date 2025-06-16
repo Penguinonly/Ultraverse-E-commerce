@@ -6,113 +6,117 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'users';
+    protected $primaryKey = 'user_id';
     public $timestamps = true;
 
-    protected $primaryKey = 'user_id';
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'password',
         'noktp',
         'nama',
         'email',
+        'password',
         'no_telepon',
         'alamat',
         'foto_ktp',
-        'verivikasi_wajah',
+        'verifikasi_wajah',
         'pendapatan_perbulan',
-        'id_peran'
+        'role',
+        'is_active'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'pendapatan_perbulan' => 'integer',
-        'verivikasi_wajah' => 'boolean'
+        'is_active' => 'boolean',
+        'pendapatan_perbulan' => 'decimal:2'
     ];
 
     /**
-     * Get the user's role.
+     * Default values for attributes
+     *
+     * @var array
      */
-    public function peran()
+    protected $attributes = [
+        'is_active' => false
+    ];
+
+    /**
+     * Automatically hash the password when it's being set
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setPasswordAttribute($value)
     {
-        return $this->belongsTo(Peran::class, 'id_peran', 'id_peran');
+        if (!empty($value)) {
+            $this->attributes['password'] = Hash::make($value);
+        }
     }
 
     /**
-     * Check if user has specific role
+     * Check if user is active
+     *
+     * @return bool
      */
-    public function hasRole(string $role): bool
+    public function isActive(): bool
     {
-        $userRole = $this->peran()->first();
-        return $userRole ? strtolower($userRole->nama_peran) === strtolower($role) : false;
+        return (bool) $this->is_active;
     }
 
     /**
-     * Check if user is admin
+     * Get the user's properties (for sellers)
      */
-    public function isAdmin(): bool
-    {
-        return $this->hasRole('admin');
-    }
-
-    public function properti()
+    public function properties()
     {
         return $this->hasMany(Properti::class, 'user_id');
     }
 
-    public function favorit()
+    /**
+     * Get the user's saved properties (for buyers)
+     */
+    public function savedProperties()
     {
-        return $this->hasMany(Favorit::class, 'user_id');
+        return $this->hasMany(SavedProperty::class, 'user_id');
     }
 
-    public function transaksiAsPembeli()
+    /**
+     * Get the user's transactions
+     */
+    public function transactions()
     {
-        return $this->hasMany(Transaksi::class, 'pembeli_id');
+        return $this->hasMany(Transaksi::class, 'user_id');
     }
 
-    public function transaksiAsPenjual()
-    {
-        return $this->hasMany(Transaksi::class, 'penjual_id');
-    }
-
-    public function notifikasi()
+    /**
+     * Get the user's notifications
+     */
+    public function notifications()
     {
         return $this->hasMany(Notifikasi::class, 'user_id');
-    }
-
-    public function pesanDikirim()
-    {
-        return $this->hasMany(Pesan::class, 'pengirim_id');
-    }
-
-    public function pesanDiterima()
-    {
-        return $this->hasMany(Pesan::class, 'penerima_id');
-    }
-
-    public function laporanInspeksi()
-    {
-        return $this->hasMany(LaporanInspeksi::class, 'inspector_id');
-    }
-
-    public function ratingUlasan()
-    {
-        return $this->hasMany(RatingUlasan::class, 'user_id');
-    }
-
-    public function dokumen()
-    {
-        return $this->hasMany(Dokumen::class, 'user_id', 'user_id');
     }
 }

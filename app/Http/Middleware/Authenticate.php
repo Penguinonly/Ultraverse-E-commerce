@@ -14,8 +14,20 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
-            return route('login');
+        if ($request->expectsJson()) {
+            return null;
         }
+
+        // Public routes that don't require authentication
+        $publicPaths = ['/', '/about', '/services', '/contact', '/properti', '/agents'];
+        
+        // Don't redirect to login if accessing public routes
+        if (in_array($request->path(), $publicPaths) || 
+            str_starts_with($request->path(), 'properti/') ||
+            str_starts_with($request->path(), 'agents/')) {
+            return null;
+        }
+
+        return route('login');
     }
 }

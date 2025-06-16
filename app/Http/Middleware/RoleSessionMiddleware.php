@@ -28,9 +28,8 @@ class RoleSessionMiddleware
         }
 
         $user = Auth::user();
-        $userRole = $user->peran()->first();
         
-        if (!$userRole || !in_array($userRole->nama_peran, $roles)) {
+        if (!in_array($user->role, $roles)) {
             return redirect()->route('home')
                 ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
         }
@@ -40,17 +39,16 @@ class RoleSessionMiddleware
             'user_id' => $user->user_id,
             'nama' => $user->nama,
             'email' => $user->email,
-            'role' => $userRole->nama_peran
+            'role' => $user->role
         ];
 
         // Set role-specific session data
         try {
-            switch ($userRole->nama_peran) {
+            switch ($user->role) {
                 case 'admin':
                     $sessionData['total_users'] = User::count();
                     $sessionData['total_properti'] = Properti::count();
-                    $sessionData['pending_pembayaran'] = Pembayaran::where('status_pembayaran', 'pending')
-                        ->whereNull('konfirmasi_pembayaran')
+                    $sessionData['pending_pembayaran'] = Pembayaran::where('konfirmasi_pembayaran', false)
                         ->count();
                     break;
 
@@ -62,7 +60,7 @@ class RoleSessionMiddleware
                             ->from('transaksi')
                             ->whereIn('properti_id', $propertiIds);
                     })
-                    ->where('status_pembayaran', 'pending')
+                    ->where('konfirmasi_pembayaran', false)
                     ->count();
                     break;
 
@@ -73,7 +71,7 @@ class RoleSessionMiddleware
                             ->from('transaksi')
                             ->where('user_id', $user->user_id);
                     })
-                    ->whereIn('status_pembayaran', ['pending', 'proses'])
+                    ->whereNull('konfirmasi_pembayaran')
                     ->count();
                     break;
             }

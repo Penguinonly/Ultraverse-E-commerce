@@ -14,6 +14,7 @@ use App\Models\Property;
 use App\Models\Payment;
 use App\Models\Withdrawal;
 use App\Models\Document;
+use App\Models\Notifikasi;
 use App\Events\PaymentProcessed;
 use App\Events\WithdrawalRequested;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -181,9 +182,7 @@ class DashboardController extends Controller
             ->paginate(10);
             
         return view('penjual.payments.history', compact('payments'));
-    }
-
-    public function showInvoice($paymentId)
+    }    public function showInvoice($paymentId)
     {
         $payment = Payment::with(['property', 'buyer', 'seller'])
             ->findOrFail($paymentId);
@@ -191,9 +190,19 @@ class DashboardController extends Controller
         if ($payment->seller_id !== Auth::id()) {
             abort(403);
         }
+
+        // Ambil notifikasi untuk ditampilkan bersama invoice
+        $notifications = Notifikasi::where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        // Tandai notifikasi terkait sebagai sudah dibaca
+        Notifikasi::where('user_id', Auth::id())
+            ->where('properti_id', $payment->property->id)
+            ->where('dibaca', false)
+            ->update(['dibaca' => true]);
         
-        $pdf = PDF::loadView('penjual.payments.invoice', compact('payment'));
-        return $pdf->download('invoice-' . $payment->reference_number . '.pdf');
+        return view('penjual.payments.show-invoice', compact('payment', 'notifications'));
     }
 
     public function requestWithdraw(Request $request)
@@ -312,5 +321,47 @@ class DashboardController extends Controller
                 ->with('error', 'Error uploading document. Please try again.')
                 ->withInput();
         }
+    }
+
+    /**
+     * Display list of all penjual (public)
+     */
+    public function listPenjual()
+    {
+        $penjuals = User::where('role', 'penjual')
+            ->where('is_active', true)
+            ->withCount('properties')
+            ->orderBy('properties_count', 'desc')
+            ->paginate(12);
+            
+        return view('penjual.list', compact('penjuals'));
+    }
+
+    /**
+     * Display public profile of a penjual
+     */
+    public function publicProfile($id)
+    {
+        $penjual = User::where('role', 'penjual')
+            ->where('is_active', true)
+            ->findOrFail($id);
+            
+        return view('penjual.public-profile', compact('penjual'));
+    }
+
+    /**
+     * Display public properties of a penjual
+     */
+    public function publicProperties($id)
+    {
+        $penjual = User::where('role', 'penjual')
+            ->where('is_active', true)
+            ->findOrFail($id);
+            
+        $properties = $penjual->properties()
+            ->where('status', 'active')
+            ->paginate(9);
+            
+        return view('penjual.public-properties', compact('penjual', 'properties'));
     }
 }

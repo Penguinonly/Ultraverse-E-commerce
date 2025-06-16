@@ -11,7 +11,7 @@
   >
 
   <!-- CSS Utama -->
-  <link rel="stylesheet" href="calendar.css">
+  <link rel="stylesheet" href="{{ asset('css/admin/calendar.css') }}">
 </head>
 <body>
   <div class="app">
@@ -32,56 +32,99 @@
     </div>
 
 <div class="main">
-  <div class="month-select">
-    <select>
-      <option>Agustus 2025</option>
-    </select>
-  </div>
+  <div class="calendar-container">
+    <div class="calendar-header">
+        <h1>Schedule Manager</h1>
+        <select class="month-select">
+            <option value="2025-06">June 2025</option>
+            <option value="2025-07">July 2025</option>
+            <option value="2025-08" selected>August 2025</option>
+            <option value="2025-09">September 2025</option>
+        </select>
+    </div>
 
-  <div class="weekdays">
-    <div class="day-box">
-      <div>Sen</div>
-      <div><strong>4</strong></div>
-      <div>7 slot</div>
+    <div class="calendar-tools">
+        <button class="tool-button active">Day View</button>
+        <button class="tool-button">Week View</button>
+        <button class="tool-button">Month View</button>
+        <button class="tool-button">Add Slot</button>
     </div>
-    <div class="day-box selected">
-      <div>Sel</div>
-      <div><strong>5</strong></div>
-      <div>4 slot</div>
-    </div>
-    <div class="day-box">
-      <div>Rab</div>
-      <div><strong>6</strong></div>
-      <div>2 slot</div>
-    </div>
-    <div class="day-box">
-      <div>Kam</div>
-      <div><strong>7</strong></div>
-      <div>10 slot</div>
-    </div>
-    <div class="day-box">
-      <div>Jum</div>
-      <div><strong>8</strong></div>
-      <div>3 slot</div>
-    </div>
-    <div class="day-box">
-      <div>Sab</div>
-      <div><strong>9</strong></div>
-      <div>2 slot</div>
-    </div>
-    <div class="day-box">
-      <div>Min</div>
-      <div><strong>10</strong></div>
-      <div>0 slot</div>
-    </div>
-  </div>
 
-  <div class="today-section">
-    <h3>Hari ini</h3>
-    <div class="slot-box"></div>
-    <div class="slot-box"></div>
-    <div class="slot-box"></div>
-  </div>
+    <div class="weekdays">
+        <div class="day-box">
+            <div class="weekday">Mon</div>
+            <div class="date">4</div>
+            <div class="slots">7 slots</div>
+        </div>
+        <div class="day-box selected">
+            <div class="weekday">Tue</div>
+            <div class="date">5</div>
+            <div class="slots">4 slots</div>
+        </div>
+        <div class="day-box">
+            <div class="weekday">Wed</div>
+            <div class="date">6</div>
+            <div class="slots">6 slots</div>
+        </div>
+        <div class="day-box">
+            <div class="weekday">Thu</div>
+            <div class="date">7</div>
+            <div class="slots">5 slots</div>
+        </div>
+        <div class="day-box">
+            <div class="weekday">Fri</div>
+            <div class="date">8</div>
+            <div class="slots">3 slots</div>
+        </div>
+        <div class="day-box">
+            <div class="weekday">Sat</div>
+            <div class="date">9</div>
+            <div class="slots">2 slots</div>
+        </div>
+        <div class="day-box">
+            <div class="weekday">Sun</div>
+            <div class="date">10</div>
+            <div class="slots">Closed</div>
+        </div>
+    </div>
+
+    <div class="time-slots">
+        <h2>Available Slots - August 5, 2025</h2>
+        
+        <div class="time-slot">
+            <div class="time-slot-info">
+                <div class="time-slot-time">09:00 - 10:00</div>
+                <span class="time-slot-status status-available">Available</span>
+            </div>
+            <div class="time-slot-actions">
+                <button class="action-btn btn-primary">Book</button>
+                <button class="action-btn btn-danger">Block</button>
+            </div>
+        </div>
+
+        <div class="time-slot">
+            <div class="time-slot-info">
+                <div class="time-slot-time">10:00 - 11:00</div>
+                <span class="time-slot-status status-booked">Booked</span>
+            </div>
+            <div class="time-slot-actions">
+                <button class="action-btn btn-primary" disabled>View</button>
+            </div>
+        </div>
+
+        <div class="time-slot">
+            <div class="time-slot-info">
+                <div class="time-slot-time">11:00 - 12:00</div>
+                <span class="time-slot-status status-available">Available</span>
+            </div>
+            <div class="time-slot-actions">
+                <button class="action-btn btn-primary">Book</button>
+                <button class="action-btn btn-danger">Block</button>
+            </div>
+        </div>
+
+        <!-- More time slots... -->
+    </div>
 </div>
 </body>
 </html>
