@@ -1,0 +1,258 @@
+/* Profile Styles */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar styles matching dashboard */
+.sidebar {
+    width: 80px;
+    background: white;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    height: 100vh;
+}
+
+.sidebar-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.sidebar .icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #333;
+    margin-bottom: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.sidebar .icon:hover,
+.sidebar .icon.active {
+    background: #FFD600;
+    color: black;
+}
+
+.sidebar .spacer {
+    flex-grow: 1;
+}
+
+/* Main content */
+.main-content {
+    flex-grow: 1;
+    margin-left: 80px;
+    padding: 30px;
+    background: #f7f7f7;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.edit-button,
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #FFD600;
+    color: black;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover,
+.back-button:hover {
+    background: #e6c100;
+}
+
+/* Profile Card */
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.profile-info {
+    display: grid;
+    gap: 20px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-group label {
+    font-size: 14px;
+    color: #666;
+}
+
+.info-group p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Edit Profile Form */
+.edit-profile-form {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.password-section {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.password-section h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.help-text {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.save-button {
+    padding: 12px 30px;
+    background: #FFD600;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background: #e6c100;
+}
+
+.cancel-button {
+    padding: 12px 30px;
+    background: #f1f1f1;
+    color: black;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background: #e5e5e5;
+}
+
+/* Error messages */
+.error {
+    color: #dc2626;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Alert messages */
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+/* Danger Zone */
+.danger-zone {
+    margin-top: 40px;
+    padding: 30px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+}
+
+.danger-zone h2 {
+    color: #dc2626;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.danger-zone p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.delete-button {
+    background: #dc2626;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background: #b91c1c;
+}

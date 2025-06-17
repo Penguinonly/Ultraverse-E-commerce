@@ -296,7 +296,7 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('penjual.documents.index', compact('documents'));
+        return view('view.penjual.dokumen', compact('documents'));
     }
 
     public function uploadDocument(Request $request)

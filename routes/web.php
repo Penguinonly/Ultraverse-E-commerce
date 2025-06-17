@@ -7,7 +7,7 @@ use App\Http\Controllers\PropertiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\DashboardController;
 

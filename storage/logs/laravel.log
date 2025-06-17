@@ -17608,3 +17608,15 @@ Stack trace:
 [stacktrace]
 #0 {main}
 "} 
+[2025-06-17 09:40:28] local.INFO: 🟡 Attempting login with: {"email":"yukikirei7@gmail.com"} 
+[2025-06-17 09:40:28] local.WARNING: ❌ Login failed for: {"email":"yukikirei7@gmail.com"} 
+[2025-06-17 09:42:04] local.INFO: 🟡 Attempting login with: {"email":"yukiyuki@gmail.com"} 
+[2025-06-17 09:42:04] local.WARNING: ❌ Login failed for: {"email":"yukiyuki@gmail.com"} 
+[2025-06-17 10:07:59] local.ERROR: syntax error, unexpected token "class", expecting "," or ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"class\", expecting \",\" or \";\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\Properti.php:11)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-17 10:08:08] local.ERROR: syntax error, unexpected token "class", expecting "," or ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"class\", expecting \",\" or \";\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\Properti.php:11)
+[stacktrace]
+#0 {main}
+"} 

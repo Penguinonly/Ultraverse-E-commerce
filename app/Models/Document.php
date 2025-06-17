@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class Dokumen extends Model
+class Document extends Model
 {
     use HasFactory;
 
@@ -42,17 +42,11 @@ class Dokumen extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Check if file exists in storage
-     */
     public function fileExists(): bool
     {
         return Storage::disk('private')->exists($this->file_path);
     }
 
-    /**
-     * Get full file URL for download or preview (if needed)
-     */
     public function downloadUrl(): string
     {
         return route('documents.download', $this->dokumen_id);
