@@ -19,6 +19,7 @@ return new class extends Migration
             $table->binary('foto_ktp')->nullable();
             $table->binary('verifikasi_wajah')->nullable();
             $table->integer('pendapatan_perbulan');
+            $table->integer('nama_toko')->nullable();
             $table->enum('role', ['admin', 'penjual', 'pembeli'])->default('pembeli');
             $table->rememberToken();
             $table->timestamps();

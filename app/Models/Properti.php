@@ -40,7 +40,7 @@ class Properti extends Model
 
     public function dokumen(): HasMany
     {
-        return $this->hasMany(Dokumen::class, 'properti_id', 'properti_id');
+        return $this->hasMany(Document::class, 'properti_id', 'properti_id');
     }
 
     public function favorit(): HasMany

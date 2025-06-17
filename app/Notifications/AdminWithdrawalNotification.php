@@ -2,17 +2,17 @@
 
 namespace App\Notifications;
 
+use App\Models\Withdrawal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Withdrawal;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AdminWithdrawalNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $withdrawal;
+    protected Withdrawal $withdrawal;
 
     /**
      * Create a new notification instance.
@@ -28,9 +28,9 @@ class AdminWithdrawalNotification extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
-        return ['mail'];
+        return ['mail']; // Tambahkan 'database' jika ingin menyimpan ke DB juga
     }
 
     /**
@@ -39,7 +39,7 @@ class AdminWithdrawalNotification extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Permintaan Penarikan Baru')
@@ -49,24 +49,24 @@ class AdminWithdrawalNotification extends Notification implements ShouldQueue
             ->line('Bank: ' . $this->withdrawal->bank_name)
             ->line('No. Rekening: ' . $this->withdrawal->account_number)
             ->line('Atas Nama: ' . $this->withdrawal->account_name)
-            ->action('Lihat Detail', url('/admin/withdrawals'))
+            ->action('Lihat Detail', url('/admin/withdrawals')) // Bisa pakai route('withdrawals.index') jika tersedia
             ->line('Silakan segera proses permintaan ini.');
     }
 
     /**
-     * Get the array representation of the notification.
+     * Get the array representation of the notification (for database channel).
      *
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
-            'user_id' => $this->withdrawal->user_id,
-            'amount' => $this->withdrawal->amount,
-            'bank_name' => $this->withdrawal->bank_name,
+            'user_id'        => $this->withdrawal->user_id,
+            'amount'         => $this->withdrawal->amount,
+            'bank_name'      => $this->withdrawal->bank_name,
             'account_number' => $this->withdrawal->account_number,
-            'account_name' => $this->withdrawal->account_name,
+            'account_name'   => $this->withdrawal->account_name,
         ];
     }
 }

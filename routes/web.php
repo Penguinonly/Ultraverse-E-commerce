@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PropertiController;
 use App\Http\Controllers\TransaksiController;
@@ -12,9 +11,17 @@ use App\Http\Controllers\PesanController;
 use App\Http\Controllers\DashboardController;
 
 // Public Routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/aboutUS', [HomeController::class, 'aboutUs'])->name('aboutUS');
-Route::get('/service', [HomeController::class, 'service'])->name('service');
+Route::get('/', function () {
+    return view('Home.home');
+})->name('home');
+
+Route::get('/aboutUS', function () {
+    return view('Home.aboutUS');
+})->name('aboutUS');
+
+Route::get('/service', function () {
+    return view('Home.service');
+})->name('service');
 
 Route::prefix('properti')->group(function () {
     Route::get('/', [PropertiController::class, 'index'])->name('properti.index');
