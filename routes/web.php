@@ -37,9 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'profile'])->name('profile');
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
-        Route::get('/notifications', [NotifikasiController::class, 'index'])->name('notifications');
-        Route::put('/notifications/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('notifications.read');
-        Route::delete('/notifications/{id}', [NotifikasiController::class, 'destroy'])->name('notifications.destroy');
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+        Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     });
 
     Route::prefix('pesan')->group(function () {

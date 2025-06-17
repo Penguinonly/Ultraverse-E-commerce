@@ -15,9 +15,9 @@ use App\Models\Payment;
 use App\Models\Withdrawal;
 use App\Models\Document;
 use App\Models\Notifikasi;
-use App\Events\PaymentProcessed;
+use App\Events\PaymentProcessed; // Not used in this controller, consider removing if truly unused.
 use App\Events\WithdrawalRequested;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf; // Not used in this controller, consider removing if truly unused.
 
 /**
  * DashboardController handles seller dashboard functionalities
@@ -27,19 +27,26 @@ class DashboardController extends Controller
 {
     /**
      * Display seller dashboard with summary statistics
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function index()
     {
         $user = Auth::user();
+        // Eager load properties to prevent N+1 query if you display property details later
         $properties = Property::where('user_id', $user->id)->get();
         $totalProperties = $properties->count();
-        $activeProperties = $properties->where('status', 'active')->count();
+
+        // Use 'where' on the original collection to avoid modifying it for subsequent counts.
+        // Or, better yet, use separate queries for clarity and efficiency if the collection is large.
+        $activeProperties = Property::where('user_id', $user->id)
+                                    ->where('status', 'active')
+                                    ->count();
+
         $totalEarnings = Payment::where('seller_id', $user->id)
             ->where('status', 'completed')
             ->sum('amount');
-        
+
         return view('penjual.dashboard', compact(
             'totalProperties',
             'activeProperties',
@@ -49,6 +56,8 @@ class DashboardController extends Controller
 
     /**
      * Display seller profile
+     *
+     * @return \Illuminate\View\View
      */
     public function profile()
     {
@@ -56,12 +65,9 @@ class DashboardController extends Controller
         return view('penjual.profile', compact('user'));
     }
 
-    // Profile management methods
     /**
      * Update seller profile information
-     */    /**
-     * Update seller profile information
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -69,20 +75,22 @@ class DashboardController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             /** @var \App\Models\User $user */
             $user = Auth::user();
-            
+
             // Enhanced validation with better phone regex
             $request->validate([
                 'name' => 'required|string|max:255',
-                'phone' => ['required', 'string', 'max:20', 'regex:/^([0-9\s\-\+\(\)]{10,})$/'],
+                // This regex allows digits, spaces, hyphens, plus signs, and parentheses,
+                // and requires at least 10 characters.
+                'phone' => ['required', 'string', 'max:20', 'regex:/^[\d\s\-\+\(\)]{10,}$/'],
                 'address' => 'required|string|max:500',
                 'avatar' => [
                     'nullable',
                     'image',
                     'mimes:jpeg,png,jpg',
-                    'max:2048',
+                    'max:2048', // 2MB
                     'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
                 ]
             ]);
@@ -90,34 +98,39 @@ class DashboardController extends Controller
             // Handle avatar upload
             if ($request->hasFile('avatar')) {
                 $avatar = $request->file('avatar');
-                
-                // Validate image is valid
+
+                // Validate image is valid - This check is somewhat redundant with 'image' and 'mimes' validation,
+                // but good for explicit safety.
                 if (!$avatar->isValid()) {
-                    throw new \Exception('Invalid image file uploaded');
+                    throw new \Exception('Invalid image file uploaded.');
                 }
-                
+
                 // Generate secure filename
                 $filename = 'avatar-' . Str::uuid() . '.' . $avatar->getClientOriginalExtension();
-                
+
                 try {
                     // Delete old avatar if exists
                     if ($user->avatar) {
                         $oldAvatarPath = 'public/avatars/' . $user->avatar;
                         if (Storage::exists($oldAvatarPath)) {
                             Storage::delete($oldAvatarPath);
+                            Log::info('Old avatar deleted: ' . $oldAvatarPath); // Log deletion for debugging
                         }
                     }
-                    
+
                     // Store new avatar
+                    // Laravel's storeAs returns the path relative to the disk's root.
+                    // 'public' disk usually maps to storage/app/public.
                     $path = $avatar->storeAs('public/avatars', $filename);
                     if (!$path) {
-                        throw new \Exception('Failed to upload avatar');
+                        throw new \Exception('Failed to store avatar file.');
                     }
-                    
-                    $user->avatar = $filename;
+
+                    $user->avatar = $filename; // Store only the filename in the database
+                    Log::info('New avatar uploaded: ' . $filename);
                 } catch (\Exception $e) {
-                    Log::error('Avatar upload error: ' . $e->getMessage());
-                    throw new \Exception('Failed to process avatar upload');
+                    Log::error('Avatar upload error for user ' . Auth::id() . ': ' . $e->getMessage());
+                    throw new \Exception('Failed to process avatar upload. ' . $e->getMessage());
                 }
             }
 
@@ -126,15 +139,17 @@ class DashboardController extends Controller
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'address' => $request->address,
-            ])->save();
-            
+            ])->save(); // No need for forceFill if you have fillable properties on the User model.
+                        // If 'avatar' is fillable, you can include it here directly.
+
             DB::commit();
-            
+
             return redirect()->back()
-                ->with('success', 'Profile updated successfully');
-                
+                ->with('success', 'Profile updated successfully.');
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
+            Log::warning('Profile validation error for user ' . Auth::id() . ': ' . $e->getMessage(), $e->errors());
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput();
@@ -142,56 +157,75 @@ class DashboardController extends Controller
             DB::rollBack();
             Log::error('Profile update error for user ' . Auth::id() . ': ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Error updating profile. Please try again.')
+                ->with('error', 'Error updating profile. Please try again. ' . $e->getMessage()) // Provide more specific error for development.
                 ->withInput();
         }
     }
 
     /**
      * Property Management Methods
+     * Display seller's properties
+     *
+     * @return \Illuminate\View\View
      */
-    
     public function properties()
     {
         $properties = Property::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            
+
         return view('penjual.properties.index', compact('properties'));
     }
 
     /**
      * Financial Management Methods
+     * Display seller's transactions
+     *
+     * @return \Illuminate\View\View
      */
-    
     public function transactions()
     {
         $transactions = Payment::where('seller_id', Auth::id())
             ->with('property')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            
+
         return view('penjual.transactions', compact('transactions'));
     }
 
+    /**
+     * Display seller's payment history
+     *
+     * @return \Illuminate\View\View
+     */
     public function paymentHistory()
     {
         $payments = Payment::where('seller_id', Auth::id())
             ->with(['property', 'buyer'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            
+
         return view('penjual.payments.history', compact('payments'));
-    }    public function showInvoice($paymentId)
+    }
+
+    /**
+     * Display a specific invoice for a payment
+     *
+     * @param int $paymentId
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
+    public function showInvoice($paymentId)
     {
         $payment = Payment::with(['property', 'buyer', 'seller'])
             ->findOrFail($paymentId);
-            
+
         if ($payment->seller_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized access to invoice.'); // More specific message for unauthorized access.
         }
 
         // Ambil notifikasi untuk ditampilkan bersama invoice
+        // This query might be better placed in a View Composer or a dedicated Notification controller
+        // if notifications are a global feature.
         $notifications = Notifikasi::where('user_id', Auth::id())
             ->latest()
             ->get();
@@ -201,63 +235,70 @@ class DashboardController extends Controller
             ->where('properti_id', $payment->property->id)
             ->where('dibaca', false)
             ->update(['dibaca' => true]);
-        
+
         return view('penjual.payments.show-invoice', compact('payment', 'notifications'));
     }
 
+    /**
+     * Handle a withdrawal request from the seller
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function requestWithdraw(Request $request)
     {
         try {
             $request->validate([
-                'amount' => 'required|numeric|min:10000',
-                'bank_name' => 'required|string',
-                'account_number' => 'required|string',
-                'account_name' => 'required|string'
+                'amount' => 'required|numeric|min:10000', // Assuming minimum withdrawal is 10,000 units.
+                'bank_name' => 'required|string|max:255',
+                'account_number' => 'required|string|max:255',
+                'account_name' => 'required|string|max:255'
             ]);
 
             DB::beginTransaction();
-            
+
             $withdrawal = Withdrawal::create([
                 'user_id' => Auth::id(),
                 'amount' => $request->amount,
                 'bank_name' => $request->bank_name,
                 'account_number' => $request->account_number,
                 'account_name' => $request->account_name,
-                'status' => 'pending'
+                'status' => 'pending' // Initial status
             ]);
 
+            // Dispatch event for withdrawal request
+            // Ensure WithdrawalRequested event and its listeners are properly set up.
             WithdrawalRequested::dispatch($withdrawal);
-            
+
             DB::commit();
-            
+
             return redirect()->back()
-                ->with('success', 'Withdrawal request submitted successfully');
-                
+                ->with('success', 'Withdrawal request submitted successfully.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            Log::warning('Withdrawal request validation error for user ' . Auth::id() . ': ' . $e->getMessage(), $e->errors());
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Withdrawal request error for user ' . Auth::id() . ': ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Error processing withdrawal request')
+                ->with('error', 'Error processing withdrawal request. Please try again. ' . $e->getMessage()) // Provide more specific error for development.
                 ->withInput();
         }
     }
 
-    /**
-     * Document Management Methods
-     */
-    
     public function documents()
     {
         $documents = Document::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            
+
         return view('penjual.documents.index', compact('documents'));
-    }    /**
-     * Upload seller documents with enhanced security and validation
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    }
+
     public function uploadDocument(Request $request)
     {
         try {
@@ -268,7 +309,7 @@ class DashboardController extends Controller
                     'required',
                     'file',
                     'mimes:pdf,doc,docx',
-                    'max:10240', // 10MB max
+                    'max:10240',
                     'mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
                 ],
                 'type' => 'required|string|in:property_deed,business_permit,tax_document,identity_card,bank_statement',
@@ -276,92 +317,99 @@ class DashboardController extends Controller
             ]);
 
             if (!$request->hasFile('document') || !$request->file('document')->isValid()) {
-                throw new \Exception('Invalid document file provided');
+                throw new \Exception('Invalid document file provided or file upload failed.');
             }
 
             $file = $request->file('document');
-            
-            // Generate secure unique filename
             $filename = 'doc-' . Str::uuid() . '.' . $file->getClientOriginalExtension();
-            
-            // Store in private storage with user-specific path
             $userPath = 'documents/' . Auth::id();
             $path = $file->storeAs($userPath, $filename, 'private');
-            
+
             if (!$path) {
-                throw new \Exception('Failed to store document');
+                throw new \Exception('Failed to store document file.');
             }
 
-            // Create document record
             Document::create([
                 'user_id' => Auth::id(),
                 'filename' => $filename,
                 'type' => $request->type,
                 'description' => $request->description,
-                'path' => $path,
+                'file_path' => $path,
                 'mime_type' => $file->getMimeType(),
                 'size' => $file->getSize(),
-                'status' => 'pending_verification'
+                'status' => 'pending_verification',
+                'tanggal_upload' => now()
             ]);
 
             DB::commit();
-            
+
             return redirect()->back()
-                ->with('success', 'Document uploaded successfully and pending verification');
-                
+                ->with('success', 'Document uploaded successfully and pending verification.');
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
+            Log::warning('Document upload validation error for user ' . Auth::id() . ': ' . $e->getMessage(), $e->errors());
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput();
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Document upload error for user ' . Auth::id() . ': ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Error uploading document. Please try again.')
+                ->with('error', 'Error uploading document. Please try again. ' . $e->getMessage())
                 ->withInput();
         }
     }
 
+
     /**
      * Display list of all penjual (public)
+     *
+     * @return \Illuminate\View\View
      */
     public function listPenjual()
     {
         $penjuals = User::where('role', 'penjual')
             ->where('is_active', true)
-            ->withCount('properties')
+            ->withCount('properties') // Counts properties directly from the database for efficiency
             ->orderBy('properties_count', 'desc')
             ->paginate(12);
-            
+
         return view('penjual.list', compact('penjuals'));
     }
 
     /**
      * Display public profile of a penjual
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function publicProfile($id)
     {
         $penjual = User::where('role', 'penjual')
             ->where('is_active', true)
             ->findOrFail($id);
-            
+
         return view('penjual.public-profile', compact('penjual'));
     }
 
     /**
      * Display public properties of a penjual
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function publicProperties($id)
     {
         $penjual = User::where('role', 'penjual')
             ->where('is_active', true)
             ->findOrFail($id);
-            
+
         $properties = $penjual->properties()
             ->where('status', 'active')
             ->paginate(9);
-            
+
         return view('penjual.public-properties', compact('penjual', 'properties'));
     }
 }

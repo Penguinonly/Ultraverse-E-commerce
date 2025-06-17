@@ -9,6 +9,8 @@ class Payment extends Model
 {
     use HasFactory;
 
+    protected $table = 'payments'; // pastikan nama tabel sesuai
+
     protected $fillable = [
         'seller_id',
         'buyer_id',
@@ -36,6 +38,6 @@ class Payment extends Model
 
     public function property()
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Properti::class, 'property_id'); // pastikan modelnya Properti
     }
 }

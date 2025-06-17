@@ -9,57 +9,66 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class DokumenController extends Controller
+class DocumentController extends Controller
 {
     public function index(Properti $properti)
     {
-        // Memastikan properti valid
         if (!$properti->exists) {
             abort(404);
         }
 
-        $dokumen = Dokumen::where('properti_id', $properti->properti_id)->get();
-        return view('dokumen.index', compact('dokumen', 'properti'));
+        $documents = Dokumen::where('properti_id', $properti->properti_id)->get();
+        return view('document.index', compact('documents', 'properti'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'dokumen' => 'required|file|max:10240', // max 10MB
+            'document' => 'required|file|max:10240',
             'properti_id' => 'required|exists:properti,properti_id'
         ]);
 
-        $path = $request->file('dokumen')->store('dokumen');
+        $path = $request->file('document')->store('dokumen');
 
-        $dokumen = new Dokumen();
-        $dokumen->properti_id = $request->properti_id;
-        $dokumen->file_path = $path;
-        $dokumen->tanggal_upload = now();
-        $dokumen->save();
+        Dokumen::create([
+            'properti_id' => $request->properti_id,
+            'file_path' => $path,
+            'tanggal_upload' => now(),
+            'user_id' => Auth::id(),
+            'status' => 'pending'
+        ]);
 
         return redirect()->back()->with('success', 'Dokumen berhasil diunggah');
     }
 
     public function show(Dokumen $dokumen)
     {
-        // Memastikan pengguna memiliki akses
         $user = Auth::user();
         $properti = Properti::find($dokumen->properti_id);
 
-        if (!$properti || ($properti->user_id !== $user->user_id && !$this->isAdminUser($user))) {
+        if (!$properti || ($properti->user_id !== $user->id && !$this->isAdminUser($user))) {
             abort(403);
         }
 
-        return Storage::download($dokumen->file_path);
+        $fullPath = storage_path('app/private/' . $dokumen->file_path);
+
+        if (!file_exists($fullPath)) {
+            abort(404, 'File tidak ditemukan di server.');
+        }
+
+        return response()->file($fullPath, [
+            'Content-Disposition' => 'inline; filename="' . $dokumen->filename . '"'
+        ]);
     }
+
+
 
     public function destroy(Dokumen $dokumen)
     {
-        // Memastikan pengguna memiliki akses
         $user = Auth::user();
         $properti = Properti::find($dokumen->properti_id);
 
-        if (!$properti || ($properti->user_id !== $user->user_id && !$this->isAdminUser($user))) {
+        if (!$properti || ($properti->user_id !== $user->id && !$this->isAdminUser($user))) {
             abort(403);
         }
 
@@ -71,7 +80,6 @@ class DokumenController extends Controller
 
     public function updateStatus(Request $request, Dokumen $dokumen)
     {
-        // Memastikan pengguna adalah admin
         if (!$this->isAdminUser(Auth::user())) {
             abort(403);
         }
@@ -86,13 +94,8 @@ class DokumenController extends Controller
         return redirect()->back()->with('success', 'Status dokumen berhasil diperbarui');
     }
 
-    /**
-     * Check if user is admin
-     */
     private function isAdminUser(User $user): bool
     {
-        return $user->peran()
-            ->where('nama_peran', 'admin')
-            ->exists();
+        return method_exists($user, 'peran') && $user->peran()->where('nama_peran', 'admin')->exists();
     }
 }

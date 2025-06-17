@@ -22,10 +22,12 @@ return new class extends Migration
 
         Schema::create('gambar_properti', function (Blueprint $table) {
             $table->id('gambar_id');
-            $table->foreignId('properti_id')->constrained('properti');
-            $table->string('url_gambar');
+            $table->foreignId('properti_id')->constrained('properti')->onDelete('cascade');
+            $table->text('url_gambar')->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->integer('urutan')->nullable();
             $table->datetime('tanggal_upload')->nullable();
-            $table->timestamps();
+            $table->timestamps(); // created_at & updated_at
         });
 
         Schema::create('dokumen', function (Blueprint $table) {
@@ -49,9 +51,11 @@ return new class extends Migration
             $table->id('transaksi_id');
             $table->foreignId('properti_id')->constrained('properti');
             $table->foreignId('pembeli_id')->constrained('users');
-            $table->foreignId('penjual_id')->constrained('users');
             $table->decimal('total_harga', 15, 2)->nullable();
-            $table->string('status_transaksi');
+            $table->string('status_transaksi', 20)->nullable();
+            $table->string('jenis_transaksi', 20)->nullable();
+            $table->text('transaksi_admin')->nullable();
+            $table->dateTime('tanggal_transaksi')->nullable();
             $table->timestamps();
         });
 
@@ -97,7 +101,7 @@ return new class extends Migration
             $table->id('ulasan_id');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('properti_id')->constrained('properti');
-            $table->integer('rating');
+            $table->integer('nilai_rating');
             $table->text('ulasan');
             $table->datetime('tanggal')->nullable();
             $table->timestamps();

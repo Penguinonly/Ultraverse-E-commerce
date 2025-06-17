@@ -10,16 +10,21 @@ class Transaksi extends Model
     use HasFactory;
 
     protected $table = 'transaksi';
-    protected $primaryKey = 'transaksi_id';    protected $fillable = [
+    protected $primaryKey = 'transaksi_id';
+
+    protected $fillable = [
         'properti_id',
         'pembeli_id',
-        'penjual_id',
-        'total_harga',
-        'status_transaksi'
+        'tanggal_transaksi',
+        'status_transaksi',
+        'jenis_transaksi',
+        'transaksi_admin',
+        'total_harga'
     ];
 
     protected $casts = [
-        'total_harga' => 'decimal:2'
+        'total_harga' => 'decimal:2',
+        'tanggal_transaksi' => 'datetime'
     ];
 
     public function properti()
@@ -28,12 +33,8 @@ class Transaksi extends Model
     }
 
     public function pembeli()
-    {        return $this->belongsTo(User::class, 'pembeli_id', 'user_id');
-    }
-
-    public function penjual()
     {
-        return $this->belongsTo(User::class, 'penjual_id', 'user_id');
+        return $this->belongsTo(User::class, 'pembeli_id', 'user_id');
     }
 
     public function pembayaran()

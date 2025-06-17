@@ -10,9 +10,13 @@ class GambarProperti extends Model
     use HasFactory;
 
     protected $table = 'gambar_properti';
-    protected $primaryKey = 'gambar_id';    protected $fillable = [
+    protected $primaryKey = 'gambar_id';
+
+    protected $fillable = [
         'properti_id',
         'url_gambar',
+        'deskripsi',
+        'urutan',
         'tanggal_upload'
     ];
 

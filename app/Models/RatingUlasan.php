@@ -13,9 +13,10 @@ class RatingUlasan extends Model
     protected $fillable = [
         'user_id',
         'properti_id',
-        'rating',
+        'nilai_rating',
         'ulasan',
-        'tanggal'
+        'tanggal',
+        'komentar'
     ];
 
     protected $casts = [
