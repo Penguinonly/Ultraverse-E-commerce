@@ -97,7 +97,7 @@ Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->name('penjual.')
 
 // Pembeli Routes
 Route::middleware(['auth', 'role:pembeli'])->prefix('pembeli')->name('pembeli.')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'pembeliDashboard'])->name('dashboard');
+    Route::get('/dashboard_search', [UserController::class, 'pembeliDashboard'])->name('pembeli.dashboard');
     Route::get('/favorit', [UserController::class, 'pembeliFavorit'])->name('favorit');
 
     Route::prefix('properti')->group(function () {

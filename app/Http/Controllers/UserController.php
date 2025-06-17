@@ -10,6 +10,11 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+    public function pembeliDashboard()
+    {
+        return view('dashboard_search'); // atau 'pembeli.dashboard_search' sesuai struktur Anda
+    }
+
     public function profile()
     {
         return view('user.profile', ['user' => Auth::user()]);

@@ -17,7 +17,8 @@ class HomeController extends Controller
             ->where('approved', true)
             ->orderBy('created_at', 'desc')
             ->take(6);
-            // ->get();
+            //->get();
+            
         return view('Home.home', compact('featuredProperties'));
     }
 
@@ -26,7 +27,7 @@ class HomeController extends Controller
      */
     public function aboutUs()
     {
-        return view('home.about-us');
+        return view('home.aboutUs');
     }
 
     /**

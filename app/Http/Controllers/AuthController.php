@@ -20,7 +20,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
-        return view('auth.login');
+        return view('Home.signIn');
     }
 
     /**
@@ -36,20 +36,22 @@ class AuthController extends Controller
                 'password' => ['required'],
             ]);
 
+            Log::info('🟡 Attempting login with:', ['email' => $credentials['email']]);
+
             if (Auth::attempt($credentials, $request->boolean('remember'))) {
                 $request->session()->regenerate();
-
                 $user = Auth::user();
 
-                // Check if user is active
-                if (!$user->is_active) {
-                    Auth::logout();
-                    return back()->withErrors([
-                        'email' => 'Akun Anda belum diaktifkan. Silakan hubungi admin.',
-                    ])->withInput($request->only('email'));
-                }
+                Log::info('✅ Auth successful for:', ['email' => $user->email, 'role' => $user->role, 'is_active' => $user->is_active]);
 
-                // Redirect based on role
+                // if (!$user->is_active) {
+                //     Auth::logout();
+                //     Log::warning('⛔ User not active:', ['email' => $user->email]);
+                //     return back()->withErrors([
+                //         'email' => 'Akun Anda belum diaktifkan. Silakan hubungi admin.',
+                //     ])->withInput($request->only('email'));
+                // }
+
                 return match($user->role) {
                     'admin' => redirect()->route('admin.dashboard'),
                     'penjual' => redirect()->route('penjual.dashboard'),
@@ -58,16 +60,61 @@ class AuthController extends Controller
                 };
             }
 
+            Log::warning('❌ Login failed for:', ['email' => $credentials['email']]);
+
             return back()->withErrors([
                 'email' => 'Email atau password salah.',
             ])->withInput($request->only('email'));
         } catch (\Exception $e) {
-            Log::error('Login error: ' . $e->getMessage());
+            Log::error('‼️ Login error: ' . $e->getMessage());
             return back()->withErrors([
                 'error' => 'Terjadi kesalahan. Silakan coba lagi.'
             ]);
         }
     }
+
+    // public function login(Request $request)
+    // {
+    //     try {
+    //         $credentials = $request->only('email', 'password');
+
+    //         $request->validate([
+    //             'email' => ['required', 'email'],
+    //             'password' => ['required'],
+    //         ]);
+
+    //         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+    //             $request->session()->regenerate();
+
+    //             $user = Auth::user();
+
+    //             // Check if user is active
+    //             if (!$user->is_active) {
+    //                 Auth::logout();
+    //                 return back()->withErrors([
+    //                     'email' => 'Akun Anda belum diaktifkan. Silakan hubungi admin.',
+    //                 ])->withInput($request->only('email'));
+    //             }
+
+    //             // Redirect based on role
+    //             return match($user->role) {
+    //                 'admin' => redirect()->route('admin.dashboard'),
+    //                 'penjual' => redirect()->route('penjual.dashboard'),
+    //                 'pembeli' => redirect()->route('pembeli.dashboard'),
+    //                 default => redirect()->route('home'),
+    //             };
+    //         }
+
+    //         return back()->withErrors([
+    //             'email' => 'Email atau password salah.',
+    //         ])->withInput($request->only('email'));
+    //     } catch (\Exception $e) {
+    //         Log::error('Login error: ' . $e->getMessage());
+    //         return back()->withErrors([
+    //             'error' => 'Terjadi kesalahan. Silakan coba lagi.'
+    //         ]);
+    //     }
+    // }
 
     /**
      * Show register form
@@ -77,7 +124,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
-        return view('auth.register');
+        return view('Home.create');
     }
 
     /**
@@ -123,7 +170,7 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            return redirect()->route('dashboard')
+            return redirect()->route('pembeli.dashboard')
                 ->with('success', 'Pendaftaran berhasil! Akun Anda akan diaktifkan setelah verifikasi admin.');
 
         } catch (\Exception $e) {

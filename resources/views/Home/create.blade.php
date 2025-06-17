@@ -26,7 +26,7 @@
       @csrf
 
       <div class="form-group">
-        <label for="name">Full Name</label>
+        <label for="name">Nama Lengkap</label>
         <input type="text" id="name" name="name" value="{{ old('name') }}" required />
       </div>
 
