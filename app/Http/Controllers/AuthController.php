@@ -137,10 +137,7 @@ class AuthController extends Controller
                 'nama' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->uncompromised()],
-                'role' => ['required', 'in:penjual,pembeli'],
-                'noktp' => ['required', 'string', 'size:16', 'unique:users'],
                 'no_telepon' => ['required', 'string', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10', 'max:15'],
-                'alamat' => ['required', 'string', 'max:255']
             ], [
                 'noktp.size' => 'Nomor KTP harus 16 digit.',
                 'no_telepon.regex' => 'Format nomor telepon tidak valid.',
@@ -161,11 +158,8 @@ class AuthController extends Controller
                 'nama' => $request->nama,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $request->role,
-                'noktp' => $request->noktp,
                 'no_telepon' => $request->no_telepon,
-                'alamat' => $request->alamat,
-                'is_active' => false
+                'nama_toko' => $request->nama_toko
             ]);
 
             Auth::login($user);

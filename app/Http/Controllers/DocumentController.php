@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dokumen;
+use App\Models\Document;
 use App\Models\Properti;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class DocumentController extends Controller
             abort(404);
         }
 
-        $documents = Dokumen::where('properti_id', $properti->properti_id)->get();
+        $documents = Document::where('properti_id', $properti->properti_id)->get();
         return view('document.index', compact('documents', 'properti'));
     }
 
@@ -30,7 +30,7 @@ class DocumentController extends Controller
 
         $path = $request->file('document')->store('dokumen');
 
-        Dokumen::create([
+        Document::create([
             'properti_id' => $request->properti_id,
             'file_path' => $path,
             'tanggal_upload' => now(),
@@ -41,7 +41,7 @@ class DocumentController extends Controller
         return redirect()->back()->with('success', 'Dokumen berhasil diunggah');
     }
 
-    public function show(Dokumen $dokumen)
+    public function show(Document $dokumen)
     {
         $user = Auth::user();
         $properti = Properti::find($dokumen->properti_id);
@@ -63,7 +63,7 @@ class DocumentController extends Controller
 
 
 
-    public function destroy(Dokumen $dokumen)
+    public function destroy(Document $dokumen)
     {
         $user = Auth::user();
         $properti = Properti::find($dokumen->properti_id);
@@ -78,7 +78,7 @@ class DocumentController extends Controller
         return redirect()->back()->with('success', 'Dokumen berhasil dihapus');
     }
 
-    public function updateStatus(Request $request, Dokumen $dokumen)
+    public function updateStatus(Request $request, Document $dokumen)
     {
         if (!$this->isAdminUser(Auth::user())) {
             abort(403);

@@ -27,8 +27,6 @@ class UserController extends Controller
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->user_id.',user_id',
             'no_telepon' => 'required|string',
-            'alamat' => 'required|string',
-            'pendapatan_perbulan' => 'required|numeric'
         ]);
 
         $user->update($validated);

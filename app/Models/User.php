@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         'no_telepon',
+        'nama_toko',
         'alamat',
         'foto_ktp',
         'verifikasi_wajah',
@@ -53,7 +54,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
-        'pendapatan_perbulan' => 'decimal:2'
+        'no_telepon' => 'integer',
+        'nama_toko' => 'string'
     ];
 
     /**

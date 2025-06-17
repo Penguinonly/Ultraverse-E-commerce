@@ -16,7 +16,6 @@ use App\Models\Withdrawal;
 use App\Models\Document;
 use App\Models\Notifikasi;
 use App\Events\PaymentProcessed; // Not used in this controller, consider removing if truly unused.
-use App\Events\WithdrawalRequested;
 use Barryvdh\DomPDF\Facade\Pdf; // Not used in this controller, consider removing if truly unused.
 
 /**
@@ -237,57 +236,6 @@ class DashboardController extends Controller
             ->update(['dibaca' => true]);
 
         return view('penjual.payments.show-invoice', compact('payment', 'notifications'));
-    }
-
-    /**
-     * Handle a withdrawal request from the seller
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function requestWithdraw(Request $request)
-    {
-        try {
-            $request->validate([
-                'amount' => 'required|numeric|min:10000', // Assuming minimum withdrawal is 10,000 units.
-                'bank_name' => 'required|string|max:255',
-                'account_number' => 'required|string|max:255',
-                'account_name' => 'required|string|max:255'
-            ]);
-
-            DB::beginTransaction();
-
-            $withdrawal = Withdrawal::create([
-                'user_id' => Auth::id(),
-                'amount' => $request->amount,
-                'bank_name' => $request->bank_name,
-                'account_number' => $request->account_number,
-                'account_name' => $request->account_name,
-                'status' => 'pending' // Initial status
-            ]);
-
-            // Dispatch event for withdrawal request
-            // Ensure WithdrawalRequested event and its listeners are properly set up.
-            WithdrawalRequested::dispatch($withdrawal);
-
-            DB::commit();
-
-            return redirect()->back()
-                ->with('success', 'Withdrawal request submitted successfully.');
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack();
-            Log::warning('Withdrawal request validation error for user ' . Auth::id() . ': ' . $e->getMessage(), $e->errors());
-            return redirect()->back()
-                ->withErrors($e->validator)
-                ->withInput();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Withdrawal request error for user ' . Auth::id() . ': ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Error processing withdrawal request. Please try again. ' . $e->getMessage()) // Provide more specific error for development.
-                ->withInput();
-        }
     }
 
     public function documents()

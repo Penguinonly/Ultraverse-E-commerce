@@ -72,7 +72,7 @@ class UltraverseSessionMiddleware
                     break;
 
                 case 'pembeli':
-                    $sessionData['pendapatan_perbulan'] = $user->pendapatan_perbulan;
+                    $sessionData['no_telepon'] = $user->no_telepon;
                     $sessionData['stats'] = [
                         'saved_properties' => SavedProperty::where('user_id', $user->user_id)->count(),
                         'active_transactions' => Payment::where('user_id', $user->user_id)

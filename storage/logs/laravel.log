@@ -18247,3 +18247,30 @@ Stack trace:
 #55 E:\\laragon\\www\\Ultraverse-E-commerce-1\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('E:\\\\laragon\\\\www\\\\...')
 #56 {main}
 "} 
+[2025-06-17 18:37:48] local.ERROR: Registration error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'role' cannot be null (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `role`, `noktp`, `no_telepon`, `alamat`, `updated_at`, `created_at`) values (0, Gian, test@gmail.com, $2y$10$urpEbd.MWP45BNS0wlj.SOVNWSvvQH8NIEC7jy8KQnX6gIHH6hl12, ?, ?, 12345678912, ?, 2025-06-17 18:37:48, 2025-06-17 18:37:48))  
+[2025-06-17 18:38:53] local.ERROR: syntax error, unexpected single-quoted string "alamat", expecting "]" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected single-quoted string \"alamat\", expecting \"]\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:31)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-17 18:39:02] local.ERROR: syntax error, unexpected token ";", expecting "]" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \";\", expecting \"]\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:30)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-17 18:39:09] local.ERROR: syntax error, unexpected token ";", expecting "]" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \";\", expecting \"]\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:30)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-17 18:39:52] local.ERROR: syntax error, unexpected single-quoted string "nama_toko", expecting "]" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected single-quoted string \"nama_toko\", expecting \"]\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:58)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-17 18:39:53] local.ERROR: syntax error, unexpected single-quoted string "nama_toko", expecting "]" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected single-quoted string \"nama_toko\", expecting \"]\" at E:\\laragon\\www\\Ultraverse-E-commerce-1\\app\\Models\\User.php:58)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-17 18:42:44] local.ERROR: Registration error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'role' cannot be null (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `role`, `noktp`, `no_telepon`, `alamat`, `updated_at`, `created_at`) values (0, gian, gian@gmail.com, $2y$10$ybwtASSCOJRxOH3imKppj.qaXniMZ63d1NaZqbBebHU.SxfcQCg9y, ?, ?, 1234567890011, ?, 2025-06-17 18:42:43, 2025-06-17 18:42:43))  
+[2025-06-17 18:42:46] local.ERROR: Registration error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'role' cannot be null (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `role`, `noktp`, `no_telepon`, `alamat`, `updated_at`, `created_at`) values (0, gian, gian@gmail.com, $2y$10$ljNioxRT.eVHHk9sPEoyQONh3OIh21CPr/kxj/0X4pxxvIuSP4agm, ?, ?, 1234567890011, ?, 2025-06-17 18:42:46, 2025-06-17 18:42:46))  
+[2025-06-17 18:44:39] local.ERROR: Registration error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'role' cannot be null (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `role`, `noktp`, `no_telepon`, `alamat`, `updated_at`, `created_at`) values (0, gian, gian@gmail.com, $2y$10$LXqF.kH2taidDOyy49Pvxe7L1pVurRfLbvqjAgw9Cf.7saoeRfMX2, ?, ?, 123456781212, ?, 2025-06-17 18:44:39, 2025-06-17 18:44:39))  
+[2025-06-17 18:45:37] local.ERROR: Registration error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'role' cannot be null (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `role`, `noktp`, `no_telepon`, `alamat`, `updated_at`, `created_at`) values (0, gian, gian@gmail.com, $2y$10$YzuhZMw04CQleBvwXJt5veCSM8OX5NXOyNrfyWas575FdhNA8pDJ6, ?, ?, 123456781212, ?, 2025-06-17 18:45:37, 2025-06-17 18:45:37))  
+[2025-06-17 18:49:16] local.ERROR: Registration error: SQLSTATE[22003]: Numeric value out of range: 1264 Out of range value for column 'no_telepon' at row 1 (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `no_telepon`, `nama_toko`, `updated_at`, `created_at`) values (0, gian, gian@gmail.com, $2y$10$hGe9zpY27Rgryaksox7d4OzQquHTuV5tTsKRs8LA0ZRV9bW9JSCuK, 123456781212, Test, 2025-06-17 18:49:16, 2025-06-17 18:49:16))  
+[2025-06-17 18:50:45] local.ERROR: Registration error: SQLSTATE[22003]: Numeric value out of range: 1264 Out of range value for column 'no_telepon' at row 1 (SQL: insert into `users` (`is_active`, `nama`, `email`, `password`, `no_telepon`, `nama_toko`, `updated_at`, `created_at`) values (0, Gian, Gian@gmail.com, $2y$10$Tk2uSyJekZ9XNDXRedqk8uZaC96.mYcg28Pyg6ioOu0hGIQjX5V6y, 123456781212, Test, 2025-06-17 18:50:45, 2025-06-17 18:50:45))  
