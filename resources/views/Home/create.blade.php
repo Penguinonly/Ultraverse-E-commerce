@@ -55,8 +55,8 @@
       </div>
       
        <div class="form-group">
-        <label for="nama_toko">Nama Toko</label>
-        <input type="text" id="nama_toko" name="nama_toko" required />
+        <label for="nama_toko">Nama Toko(opsional)</label>
+        <input type="text" id="nama_toko" name="nama_toko" placeholder="Isi Jika Mendaftar Sebagai Penjual" />
       </div>
 
       <button type="submit" class="btn">Buat Akun</button>

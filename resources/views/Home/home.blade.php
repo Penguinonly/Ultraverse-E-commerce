@@ -9,10 +9,10 @@
     </a>
     <nav class="nav-links">
       <a href="{{ url('home') }}">Home</a>
-      <a href="{{ url('/aboutUS') }}">About us</a>
       <a href="{{ url('/service') }}">Service</a>
+      <a href="{{ url('/aboutUS') }}">About us</a>
     </nav>
-    <a href="{{ url('/create') }}" class="btn-login">Login</a>
+    <a href="{{ url('/signIn') }}" class="btn-login">Login</a>
   </div>
 </header>
 
@@ -20,7 +20,7 @@
   <div class="container hero-content">
     <h1 class="hero-title">Welcome to <span class="italic">InHouse</span></h1>
     <p class="hero-subtitle">Your journey to a new home begins here. Trust us to make it seamless, secure, and successful.</p>
-    <a href="#" class="btn-search">Search for properties</a>
+    <a href="{{ url('/dashboard_search') }}" class="btn-search">Search for properties</a>
   </div>
 </section>
 

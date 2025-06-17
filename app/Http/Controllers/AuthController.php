@@ -44,13 +44,13 @@ class AuthController extends Controller
 
                 Log::info('✅ Auth successful for:', ['email' => $user->email, 'role' => $user->role, 'is_active' => $user->is_active]);
 
-                // if (!$user->is_active) {
-                //     Auth::logout();
-                //     Log::warning('⛔ User not active:', ['email' => $user->email]);
-                //     return back()->withErrors([
-                //         'email' => 'Akun Anda belum diaktifkan. Silakan hubungi admin.',
-                //     ])->withInput($request->only('email'));
-                // }
+                if (!$user->is_active) {
+                    Auth::logout();
+                    Log::warning('⛔ User not active:', ['email' => $user->email]);
+                    return back()->withErrors([
+                        'email' => 'Akun Anda belum diaktifkan. Silakan hubungi admin.',
+                    ])->withInput($request->only('email'));
+                }
 
                 return match($user->role) {
                     'admin' => redirect()->route('admin.dashboard'),
@@ -132,47 +132,31 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'nama' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->uncompromised()],
-                'no_telepon' => ['required', 'string', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10', 'max:15'],
-            ], [
-                'noktp.size' => 'Nomor KTP harus 16 digit.',
-                'no_telepon.regex' => 'Format nomor telepon tidak valid.',
-                'password.min' => 'Password minimal 8 karakter.',
-                'password.mixed_case' => 'Password harus mengandung huruf besar dan kecil.',
-                'password.numbers' => 'Password harus mengandung angka.',
-                'password.uncompromised' => 'Password yang Anda masukkan terlalu umum. Silakan gunakan password yang lebih unik.'
-            ]);
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:6',
+            'no_telepon' => 'required|string|max:20',
+            'nama_toko' => 'nullable|string|max:255', // boleh kosong
+        ]);
 
-            if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput($request->except('password', 'password_confirmation'));
-            }
-
-            $user = User::create([
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'no_telepon' => $request->no_telepon,
-                'nama_toko' => $request->nama_toko
-            ]);
-
-            Auth::login($user);
-
-            return redirect()->route('pembeli.dashboard')
-                ->with('success', 'Pendaftaran berhasil! Akun Anda akan diaktifkan setelah verifikasi admin.');
-
-        } catch (\Exception $e) {
-            Log::error('Registration error: ' . $e->getMessage());
-            return back()
-                ->withErrors(['error' => 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.'])
-                ->withInput($request->except('password', 'password_confirmation'));
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        // Tentukan role berdasarkan nama_toko
+        $role = $request->filled('nama_toko') ? 'penjual' : 'pembeli';
+
+        User::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'no_telepon' => $request->no_telepon,
+            'nama_toko' => $request->nama_toko,
+            'role' => $role,
+        ]);
+
+        return redirect()->route('login')->with('success', 'Akun berhasil dibuat!');
     }
 
     /**

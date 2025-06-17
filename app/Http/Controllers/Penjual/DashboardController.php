@@ -12,11 +12,9 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Property;
 use App\Models\Payment;
-use App\Models\Withdrawal;
 use App\Models\Document;
 use App\Models\Notifikasi;
 use App\Events\PaymentProcessed; // Not used in this controller, consider removing if truly unused.
-use Barryvdh\DomPDF\Facade\Pdf; // Not used in this controller, consider removing if truly unused.
 
 /**
  * DashboardController handles seller dashboard functionalities

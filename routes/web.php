@@ -23,6 +23,10 @@ Route::get('/service', function () {
     return view('Home.service');
 })->name('service');
 
+Route::get('/dashboard_search', function () {
+    return view('Home.dashboard_search');
+})->name('dashboard_search');
+
 Route::prefix('properti')->group(function () {
     Route::get('/', [PropertiController::class, 'index'])->name('properti.index');
     Route::get('/search', [PropertiController::class, 'search'])->name('properti.search');
