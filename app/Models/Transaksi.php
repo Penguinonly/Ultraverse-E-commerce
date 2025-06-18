@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Import ini
+use Illuminate\Database\Eloquent\Relations\HasOne;    // Import ini
 
 class Transaksi extends Model
 {
@@ -27,18 +29,29 @@ class Transaksi extends Model
         'tanggal_transaksi' => 'datetime'
     ];
 
-    public function properti()
+    /**
+     * Get the property that owns the transaction.
+     */
+    public function properti(): BelongsTo
     {
-        return $this->belongsTo(Properti::class, 'properti_id');
+        return $this->belongsTo(Properti::class, 'properti_id', 'properti_id');
     }
 
-    public function pembeli()
+    /**
+     * Get the buyer (user) that owns the transaction.
+     */
+    public function pembeli(): BelongsTo
     {
+        // Jika pembeli_id di tabel 'transaksi' mengacu ke user_id pembeli di tabel 'users'
         return $this->belongsTo(User::class, 'pembeli_id', 'user_id');
     }
 
-    public function pembayaran()
+    /**
+     * Get the payment associated with the transaction.
+     */
+    public function pembayaran(): HasOne
     {
-        return $this->hasMany(Pembayaran::class, 'transaksi_id');
+        // Jika satu transaksi memiliki satu pembayaran
+        return $this->hasOne(Pembayaran::class, 'transaksi_id', 'transaksi_id');
     }
 }
