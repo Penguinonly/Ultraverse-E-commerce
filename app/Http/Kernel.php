@@ -53,7 +53,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -63,7 +63,19 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'role' => \App\Http\Middleware\CheckRole::class,
-        'active' => \App\Http\Middleware\CheckActiveStatus::class,
+
+        // --- PENYESUAIAN DI SINI ---
+
+        // Mengganti 'role' dengan 'rolesession' karena kita menggunakan RoleSessionMiddleware
+        // yang menangani pemeriksaan role DAN manajemen sesi.
+        'rolesession' => \App\Http\Middleware\RoleSessionMiddleware::class,
+
+        // Jika Anda memiliki CheckRole dan CheckActiveStatus yang terpisah,
+        // dan ingin tetap menggunakannya untuk skenario tertentu, biarkan.
+        // Namun, jika RoleSessionMiddleware sudah mencakup ini,
+        // Anda mungkin ingin mempertimbangkan untuk menghapusnya atau hanya menggunakan rolesession.
+        // Berdasarkan diskusi kita, 'rolesession' menggantikan 'role'.
+        // 'role' => \App\Http\Middleware\CheckRole::class, // <-- Ini bisa dihapus jika rolesession sudah mencakup
+        // 'active' => \App\Http\Middleware\CheckActiveStatus::class, // <-- Ini juga bisa dihapus jika logicnya digabung
     ];
 }

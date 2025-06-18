@@ -16,10 +16,15 @@
                 <i class="fas fa-home"></i><span>Beranda</span>
             </a>
             
-            {{-- @if(Auth::user()->role === 'admin') --}}
-            <a href="{{ route('admin.dashboard') }}" class="menu-item {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fas fa-user"></i><span>User</span>
-            </a>
+          @auth
+                @if(Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}" class="menu-item {{ Request::is('admin.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-user"></i><span>User</span>
+                    </a>
+                @endif
+                {{-- Tambahkan juga logika untuk role lain jika diperlukan di sidebar --}}
+                {{-- Misalnya, jika dashboard_search adalah dashboard utama pembeli, mungkin tidak perlu link admin --}}
+            @endauth
             {{-- @endif --}}
             
             {{-- <a href="{{ route('dokumen') }}" class="menu-item {{ Request::routeIs('dokumen') ? 'active' : '' }}">

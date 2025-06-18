@@ -1,16 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth; // Penting untuk Auth::user()
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PropertiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminLoginController; // Pastikan ini diimport
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PesanController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardController; // Jika ini masih digunakan
 
-// Public Routes
+// Public Routes: Dapat diakses tanpa login
 Route::get('/', function () {
     return view('Home.home');
 })->name('home');
@@ -23,16 +25,15 @@ Route::get('/service', function () {
     return view('Home.service');
 })->name('service');
 
-Route::get('/dashboard_search', function () {
-    return view('Home.dashboard_search');
-})->name('dashboard_search');
-
+// Rute properti publik
 Route::prefix('properti')->group(function () {
     Route::get('/', [PropertiController::class, 'index'])->name('properti.index');
     Route::get('/search', [PropertiController::class, 'search'])->name('properti.search');
     Route::get('/{id}', [PropertiController::class, 'show'])->name('properti.show');
 });
 
+// Authentication Routes untuk user umum (pembeli/penjual)
+// Hanya bisa diakses oleh 'guest' (belum login)
 Route::middleware('guest')->group(function () {
     Route::get('/create', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/create', [AuthController::class, 'register'])->name('register.post');
@@ -40,11 +41,28 @@ Route::middleware('guest')->group(function () {
     Route::post('/signIn', [AuthController::class, 'login'])->name('login.post');
 });
 
-// Protected Routes
+// Protected Routes: Hanya bisa diakses oleh user yang sudah 'auth' (login)
 Route::middleware('auth')->group(function () {
+    // Logout untuk user umum
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Rute /dashboard umum: ini adalah REDIRECTOR berdasarkan role user
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+        // Auth::user() seharusnya tidak null di sini karena sudah melewati middleware 'auth'
+        if ($user) {
+            return match ($user->role) {
+                'admin' => redirect()->route('admin.dashboard'),
+                'penjual' => redirect()->route('penjual.dashboard'),
+                'pembeli' => redirect()->route('pembeli.dashboard'),
+                default => redirect()->route('home'), // Fallback jika role tidak dikenal
+            };
+        }
+        // Fallback jika entah bagaimana user tidak terautentikasi (seharusnya tidak terjadi)
+        return redirect()->route('login');
+    })->name('dashboard');
+
+    // Rute profil dan notifikasi user
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'profile'])->name('profile');
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
@@ -53,6 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     });
 
+    // Rute pesan user
     Route::prefix('pesan')->group(function () {
         Route::get('/', [PesanController::class, 'index'])->name('pesan.index');
         Route::get('/{id}', [PesanController::class, 'show'])->name('pesan.show');
@@ -61,31 +80,46 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Admin Routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
 
-    Route::prefix('users')->group(function () {
-        Route::get('/', [AdminController::class, 'users'])->name('users.index');
-        Route::get('/{user}', [AdminController::class, 'showUser'])->name('users.show');
-        Route::put('/{user}/activate', [AdminController::class, 'activateUser'])->name('users.activate');
-        Route::put('/{user}/deactivate', [AdminController::class, 'deactivateUser'])->name('users.deactivate');
-        Route::delete('/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+// ===========================================================================================
+// ADMIN ROUTES
+// ===========================================================================================
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    // Rute Login & Proses Login Admin (tanpa middleware role)
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminLoginController::class, 'login']);
+
+    // Rute Logout Admin
+    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+
+    // Rute yang Dilindungi: HANYA untuk user yang sudah 'auth' DAN memiliki 'rolesession:admin'
+    // Middleware 'rolesession:admin' akan memastikan role dan MENYIAPKAN DATA SESI admin
+    Route::middleware(['auth', 'rolesession:admin'])->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
+
+        Route::prefix('users')->group(function () {
+            Route::get('/', [AdminController::class, 'users'])->name('users.index');
+            Route::get('/{user}', [AdminController::class, 'showUser'])->name('users.show');
+            Route::post('/{user}/verify', [AdminController::class, 'verifyUser'])->name('users.verify');
+            Route::delete('/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+        });
+
+        Route::prefix('properti')->group(function () {
+            Route::get('/', [AdminController::class, 'properti'])->name('properti.index');
+            Route::get('/{properti}', [AdminController::class, 'showProperti'])->name('properti.show');
+            Route::post('/{properti}/verify', [AdminController::class, 'verifyProperti'])->name('properti.verify');
+        });
+
+        Route::get('/transaksi', [AdminController::class, 'transaksiIndex'])->name('transaksi.index');
     });
-
-    Route::prefix('properti')->group(function () {
-        Route::get('/', [AdminController::class, 'propertiIndex'])->name('properti.index');
-        Route::get('/{id}', [AdminController::class, 'propertiShow'])->name('properti.show');
-        Route::put('/{id}/approve', [AdminController::class, 'propertiApprove'])->name('properti.approve');
-        Route::put('/{id}/reject', [AdminController::class, 'propertiReject'])->name('properti.reject');
-    });
-
-    Route::get('/transaksi', [AdminController::class, 'transaksiIndex'])->name('transaksi.index');
 });
 
-// Penjual Routes
-Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->name('penjual.')->group(function () {
+// ===========================================================================================
+// PENJUAL ROUTES
+// ===========================================================================================
+Route::middleware(['auth', 'rolesession:penjual'])->prefix('penjual')->name('penjual.')->group(function () { // <-- Middleware rolesession:penjual
     Route::get('/dashboard', [UserController::class, 'penjualDashboard'])->name('dashboard');
     Route::get('/analytics', [UserController::class, 'penjualAnalytics'])->name('analytics');
 
@@ -106,9 +140,12 @@ Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->name('penjual.')
     });
 });
 
-// Pembeli Routes
-Route::middleware(['auth', 'role:pembeli'])->prefix('pembeli')->name('pembeli.')->group(function () {
-    Route::get('/dashboard_search', [UserController::class, 'pembeliDashboard'])->name('pembeli.dashboard');
+// ===========================================================================================
+// PEMBELI ROUTES
+// ===========================================================================================
+Route::middleware(['auth', 'rolesession:pembeli'])->prefix('pembeli')->name('pembeli.')->group(function () { // <-- Middleware rolesession:pembeli
+    // Rute dashboard_search diubah namanya menjadi 'dashboard' untuk pembeli
+    Route::get('/dashboard_search', [UserController::class, 'pembeliDashboard'])->name('dashboard');
     Route::get('/favorit', [UserController::class, 'pembeliFavorit'])->name('favorit');
 
     Route::prefix('properti')->group(function () {

@@ -22,7 +22,7 @@ class AuthController extends Controller
             case 'admin':
                 return view('admin.dashboard');
             case 'penjual':
-                return view('Home.signIn');
+                return view('penjua;.dashboard');
             case 'pembeli':
                 return view('pembeli.dashboard');
             default:
